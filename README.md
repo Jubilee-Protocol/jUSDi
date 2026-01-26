@@ -2,6 +2,7 @@
 
 ![Jubilee Protocol](https://img.shields.io/badge/Jubilee-Protocol-pink)
 ![License](https://img.shields.io/badge/license-MIT-blue)
+![Ethereum](https://img.shields.io/badge/Ethereum-Sepolia-blue)
 ![Base](https://img.shields.io/badge/Base-Testnet-blue)
 ![Solana](https://img.shields.io/badge/Solana-Devnet-purple)
 
