@@ -2,12 +2,12 @@
 
 ![Jubilee Protocol](https://img.shields.io/badge/Jubilee-Protocol-pink)
 ![License](https://img.shields.io/badge/license-MIT-blue)
-![Base](https://img.shields.io/badge/Base-Mainnet-blue)
-![Solana](https://img.shields.io/badge/Solana-Mainnet-purple)
+![Base](https://img.shields.io/badge/Base-Testnet-blue)
+![Solana](https://img.shields.io/badge/Solana-Devnet-purple)
 
 **jUSDi** is a diversified stablecoin index vault that manages exposure across USDC, USDT, DAI, and USDS with automated risk-based rebalancing and yield optimization. Earn **12-15% target APY** while maintaining maximum stablecoin safety.
 
-**Available on**: Ethereum • Base • Solana
+**Testnets available on**: Ethereum Sepolia • Base Sepolia • Solana Devnet
 
 ---
 
@@ -21,7 +21,7 @@ jUSDi maintains a risk-weighted allocation across top stablecoins, automatically
 - **💰 Yield Optimization**: Aave V3 (EVM) and Kamino (Solana) integration
 - **🔒 Depeg Protection**: Circuit breakers trigger "flight to quality" on price deviation
 - **📊 ERC4626 Compliant**: Standard vault interface for easy integration
-- **🌐 Multi-Chain**: Available on Base (EVM) and Solana
+- **🌐 Multi-Chain**: Testnets live on Base and Solana
 
 ---
 
@@ -40,14 +40,14 @@ For full details, see [AUDIT_REPORT.md](docs/AUDIT_REPORT.md).
 
 ## Contract Addresses
 
-### Ethereum Mainnet
+### Ethereum Mainnet (Coming Soon)
 | Contract | Address |
 |----------|---------||
 | jUSDi Vault | `TBD` |
 | LendingRouter | `TBD` |
 | Adapter | `TBD` |
 
-### Base Mainnet
+### Base Mainnet (Coming Soon)
 | Contract | Address |
 |----------|---------|
 | jUSDi Vault | `TBD` |
@@ -167,9 +167,11 @@ anchor deploy --provider.cluster mainnet
 
 **Deployments**
 - ✅ Base Sepolia: Vault + Strategy deployed
+- ✅ Ethereum Sepolia: Vault + Strategy deployed
 - ✅ Solana Devnet: Program deployed
-- ⏳ Base Mainnet: Ready for deployment
-- ⏳ Solana Mainnet: Ready for deployment
+- ⏳ Ethereum Mainnet: Coming Soon
+- ⏳ Base Mainnet: Coming Soon
+- ⏳ Solana Mainnet: Coming Soon
 
 **Infrastructure**
 - Created comprehensive audit report
