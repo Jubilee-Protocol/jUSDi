@@ -1,0 +1,19 @@
+{
+  "name": "jusdi",
+  "version": "1.0.0",
+  "description": "Jubilee USD Index",
+  "main": "index.js",
+  "scripts": {
+    "test": "hardhat test",
+    "compile": "hardhat compile",
+    "deploy:base": "hardhat run scripts/deploy.ts --network base"
+  },
+  "dependencies": {
+    "@openzeppelin/contracts": "^5.0.0"
+  },
+  "devDependencies": {
+    "@nomicfoundation/hardhat-toolbox": "^4.0.0",
+    "hardhat": "^2.22.0",
+    "dotenv": "^16.4.5"
+  }
+}
