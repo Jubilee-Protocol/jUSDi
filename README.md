@@ -8,7 +8,7 @@
 
 **jUSDi** is a diversified stablecoin index vault that manages exposure across USDC, USDT, DAI, and USDS with automated risk-based rebalancing and yield optimization. Earn **12-15% target APY** while maintaining maximum stablecoin safety.
 
-**Testnets available on**: Ethereum Sepolia • Base Sepolia • Solana Devnet
+**Soon available on**: Ethereum Sepolia • Base Sepolia • Solana Devnet
 
 ---
 
