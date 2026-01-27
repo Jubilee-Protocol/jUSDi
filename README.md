@@ -22,7 +22,7 @@ jUSDi maintains a risk-weighted allocation across top stablecoins, automatically
 - **💰 Yield Optimization**: Aave V3 (EVM) and Kamino (Solana) integration
 - **🔒 Depeg Protection**: Circuit breakers trigger "flight to quality" on price deviation
 - **📊 ERC4626 Compliant**: Standard vault interface for easy integration
-- **🌐 Multi-Chain**: Testnets live on Base and Solana
+- **🌐 Multi-Chain**: Testnets / Devnet soon available on Base, Ethereum, and Solana
 
 ---
 
