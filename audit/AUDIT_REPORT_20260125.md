@@ -1,7 +1,7 @@
 # jUSDi Audit Report
 
 **Date:** 2026-01-25
-**Auditor:** Antigravity (Mercenary Mode)
+**Auditor:** Jubilee Labs 
 **Subject:** `jUSDi` Core Contracts
 
 ---

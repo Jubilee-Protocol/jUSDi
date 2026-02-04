@@ -10,6 +10,7 @@ import "./EmergencyManager.sol";
 import "./StablecoinOracle.sol";
 import "./RebalancingEngine.sol";
 import "./LendingRouter.sol";
+import "../../JUSDi.sol";
 
 /**
  * @title JUSDiVault
@@ -31,9 +32,14 @@ contract JUSDiVault is ERC4626, Ownable, ReentrancyGuard {
     /// @notice Router for yield protocols (Aave/Morpho)
     address public lendingRouter;
 
+    // --- Token Separation ---
+    JUSDi public immutable jusdiToken;
+
     // --- Accounting ---
     /// @notice Internally tracked balances to prevent donation attacks
     mapping(address => uint256) private _managedBalances;
+    /// @notice Internally tracked invested balances to separate yield
+    mapping(address => uint256) private _investedBalances;
     /// @notice Targeted liquid buffer in BPS (e.g. 1000 = 10%)
     uint256 public liquidBufferBps = 1000;
 
@@ -52,15 +58,19 @@ contract JUSDiVault is ERC4626, Ownable, ReentrancyGuard {
 
     constructor(
         IERC20 _baseAsset,
-        string memory _name,
-        string memory _symbol,
+        address _jusdiToken,
         address _owner,
         address _riskScoring,
         address _emergencyManager,
         address _oracle,
         address _rebalancingEngine,
         address _lendingRouter
-    ) ERC4626(_baseAsset) ERC20(_name, _symbol) Ownable(_owner) {
+    )
+        ERC4626(_baseAsset)
+        ERC20("Jubilee USD Index Vault", "vJUSDi")
+        Ownable(_owner)
+    {
+        jusdiToken = JUSDi(_jusdiToken);
         riskScoring = RiskScoring(_riskScoring);
         emergencyManager = EmergencyManager(_emergencyManager);
         oracle = StablecoinOracle(_oracle);
@@ -125,13 +135,34 @@ contract JUSDiVault is ERC4626, Ownable, ReentrancyGuard {
         for (uint256 i = 0; i < underlyingStables.length; i++) {
             address stable = underlyingStables[i];
 
-            // SECURITY: Use internally managed balance instead of balanceOf(address(this))
-            // This prevents donation attacks from inflating share price.
-            uint256 balance = _managedBalances[stable];
+            // 1. Principal (Liquid + Invested Principal)
+            // We use _managedBalances as the source of truth for Principal.
+            // This ignores direct donations to the vault (liquid donations).
+            uint256 principal = _managedBalances[stable];
 
-            if (balance > 0) {
+            // 2. Yield
+            uint256 yield = 0;
+            if (lendingRouter != address(0)) {
+                // Check Aave/Morpho balance (Principal + Yield)
+                try
+                    LendingRouter(lendingRouter).getBalance(
+                        address(lendingRouter),
+                        stable,
+                        false
+                    )
+                returns (uint256 investedTotal) {
+                    uint256 investedPrincipal = _investedBalances[stable];
+                    if (investedTotal > investedPrincipal) {
+                        yield = investedTotal - investedPrincipal;
+                    }
+                } catch {}
+            }
+
+            uint256 totalAssetBalance = principal + yield;
+
+            if (totalAssetBalance > 0) {
                 if (stable == baseAsset) {
-                    totalVal += balance;
+                    totalVal += totalAssetBalance;
                 } else {
                     uint256 price = oracle.getPrice(stable); // 8 decimals
                     uint256 basePrice = oracle.getPrice(baseAsset); // 8 decimals
@@ -140,11 +171,11 @@ contract JUSDiVault is ERC4626, Ownable, ReentrancyGuard {
                     uint256 normalizedBalance;
                     if (baseDecimals >= stableDecimals) {
                         normalizedBalance =
-                            balance *
+                            totalAssetBalance *
                             (10 ** (baseDecimals - stableDecimals));
                     } else {
                         normalizedBalance =
-                            balance /
+                            totalAssetBalance /
                             (10 ** (stableDecimals - baseDecimals));
                     }
 
@@ -153,6 +184,43 @@ contract JUSDiVault is ERC4626, Ownable, ReentrancyGuard {
             }
         }
         return totalVal;
+    }
+
+    // --- External Token Overrides ---
+
+    function decimals() public view override(ERC4626) returns (uint8) {
+        return jusdiToken.decimals();
+    }
+
+    function totalSupply()
+        public
+        view
+        override(ERC20, IERC20)
+        returns (uint256)
+    {
+        return jusdiToken.totalSupply();
+    }
+
+    function balanceOf(
+        address account
+    ) public view override(ERC20, IERC20) returns (uint256) {
+        return jusdiToken.balanceOf(account);
+    }
+
+    function _update(
+        address from,
+        address to,
+        uint256 value
+    ) internal override(ERC20) {
+        if (from == address(0)) {
+            jusdiToken.mint(to, value);
+        } else if (to == address(0)) {
+            jusdiToken.burn(from, value);
+        } else {
+            revert(
+                "JUSDiVault: Transfers via Vault not supported. Interact with Token directly."
+            );
+        }
     }
 
     /**
@@ -187,6 +255,7 @@ contract JUSDiVault is ERC4626, Ownable, ReentrancyGuard {
             uint256 toSupply = currentLiquid - targetBuffer;
             IERC20(baseAsset).safeIncreaseAllowance(lendingRouter, toSupply);
             LendingRouter(lendingRouter).supply(baseAsset, toSupply, false);
+            _investedBalances[baseAsset] += toSupply;
         }
 
         return shares;
@@ -203,23 +272,36 @@ contract JUSDiVault is ERC4626, Ownable, ReentrancyGuard {
         address baseAsset = asset();
         uint256 currentLiquid = IERC20(baseAsset).balanceOf(address(this));
 
+        uint256 shortage = 0;
+        uint256 yieldUsed = 0;
+
         // 1. Pull from yield if liquid buffer is insufficient
         if (currentLiquid < assets) {
-            uint256 needed = assets - currentLiquid;
+            shortage = assets - currentLiquid;
             // SECURITY: Handle illiquid yield protocols gracefully
             try
                 LendingRouter(lendingRouter).withdraw(
                     baseAsset,
-                    needed,
+                    shortage,
                     address(this),
                     false
                 )
             {
-                // Success
+                // Update invested principal tracking
+                uint256 investedPrincipal = _investedBalances[baseAsset];
+                if (shortage >= investedPrincipal) {
+                    _investedBalances[baseAsset] = 0;
+                    yieldUsed = shortage - investedPrincipal;
+                } else {
+                    _investedBalances[baseAsset] -= shortage;
+                    yieldUsed = 0;
+                }
             } catch {
                 // If Aave/Morpho fails, we can only withdraw what we have liquidly
                 if (currentLiquid == 0) revert("Yield protocol illiquid");
                 assets = currentLiquid;
+                shortage = 0;
+                yieldUsed = 0;
             }
         }
 
@@ -227,7 +309,14 @@ contract JUSDiVault is ERC4626, Ownable, ReentrancyGuard {
         uint256 shares = super.withdraw(assets, receiver, owner);
 
         // 3. Update accounting
-        _managedBalances[baseAsset] -= assets;
+        // _managedBalances tracks Principal. Decrease by AmountCoveredByPrincipal
+        // AmountCoveredByPrincipal = Assets - YieldUsed
+        if (assets >= yieldUsed) {
+            _managedBalances[baseAsset] -= (assets - yieldUsed);
+        } else {
+            // Should be impossible if logic is correct (yieldUsed is part of assets)
+            _managedBalances[baseAsset] = 0;
+        }
 
         return shares;
     }

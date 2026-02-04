@@ -1,12 +1,12 @@
 [package]
-name = "jusdi-vault"
+name = "jubilee-yield-stream"
 version = "0.1.0"
-description = "Jubilee USD Index Solana Program"
+description = "Jubilee Yield Stream - Endowment-as-a-Service for Immortal Agents"
 edition = "2021"
 
 [lib]
 crate-type = ["cdylib", "lib"]
-name = "jusdi_vault"
+name = "jubilee_yield_stream"
 
 [features]
 no-entrypoint = []
@@ -19,7 +19,6 @@ default = []
 anchor-lang = "0.30.1"
 anchor-spl = "0.30.1"
 solana-program = "1.18.17"
-# pyth-sdk-solana removed as per refactor
 blake3 = "=1.5.0"
 
 [profile.release]

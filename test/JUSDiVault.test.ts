@@ -37,8 +37,17 @@ describe("JUSDiVault", function () {
 
         const LendingRouterFactory = await ethers.getContractFactory("LendingRouter");
         const MockLendingFactory = await ethers.getContractFactory("MockLending");
+        const MockATokenFactory = await ethers.getContractFactory("MockAToken");
         const mockAave = await MockLendingFactory.deploy();
         const mockMorpho = await MockLendingFactory.deploy();
+
+        // Setup Mock Aave assets
+        const aUsdc = await MockATokenFactory.deploy("Aave USDC", "aUSDC", await usdc.getAddress(), owner.address);
+
+        // Transfer aToken ownership to MockLending so it can mint
+        await aUsdc.transferOwnership(await mockAave.getAddress());
+
+        await mockAave.initAsset(await usdc.getAddress(), await aUsdc.getAddress());
 
         lendingRouter = await LendingRouterFactory.deploy(
             owner.address,
@@ -46,11 +55,19 @@ describe("JUSDiVault", function () {
             await mockMorpho.getAddress()
         );
 
+        // Deploy Mock LayerZero Endpoint
+        const MockLZEndpointFactory = await ethers.getContractFactory("MockLZEndpoint");
+        const mockLzEndpoint = await MockLZEndpointFactory.deploy();
+
+        // Deploy JUSDi Token (OFT)
+        // args: _lzEndpoint, _delegate
+        const JUSDiFactory = await ethers.getContractFactory("JUSDi");
+        const jusdiToken = await JUSDiFactory.deploy(await mockLzEndpoint.getAddress(), owner.address);
+
         const JUSDiVaultFactory = await ethers.getContractFactory("contracts/vaults/jUSDi/JUSDiVault.sol:JUSDiVault");
         vault = await JUSDiVaultFactory.deploy(
             await usdc.getAddress(),
-            "Jubilee USD Index",
-            "jUSDi",
+            await jusdiToken.getAddress(),
             owner.address,
             await riskScoring.getAddress(),
             await emergencyManager.getAddress(),
@@ -58,6 +75,13 @@ describe("JUSDiVault", function () {
             await rebalancingEngine.getAddress(),
             await lendingRouter.getAddress()
         );
+
+
+        // Unpause token before transfer
+        await jusdiToken.unpause();
+
+        // Grant Vault Minter Role (Owner)
+        await jusdiToken.transferOwnership(await vault.getAddress());
 
         await lendingRouter.transferOwnership(await vault.getAddress());
 

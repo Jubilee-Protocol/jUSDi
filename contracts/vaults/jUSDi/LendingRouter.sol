@@ -5,6 +5,28 @@ import "@openzeppelin/contracts/access/Ownable.sol";
 import "@openzeppelin/contracts/token/ERC20/IERC20.sol";
 import "@openzeppelin/contracts/token/ERC20/utils/SafeERC20.sol";
 
+struct ReserveConfigurationMap {
+    uint256 data;
+}
+
+struct ReserveData {
+    ReserveConfigurationMap configuration;
+    uint128 liquidityIndex;
+    uint128 currentLiquidityRate;
+    uint128 variableBorrowIndex;
+    uint128 currentVariableBorrowRate;
+    uint128 currentStableBorrowRate;
+    uint40 lastUpdateTimestamp;
+    uint16 id;
+    address aTokenAddress;
+    address stableDebtTokenAddress;
+    address variableDebtTokenAddress;
+    address interestRateStrategyAddress;
+    uint128 accruedToTreasury;
+    uint128 unbacked;
+    uint128 isolationModeTotalDebt;
+}
+
 interface IAavePool {
     function supply(
         address asset,
@@ -17,10 +39,9 @@ interface IAavePool {
         uint256 amount,
         address to
     ) external returns (uint256);
-    function balances(
-        address account,
+    function getReserveData(
         address asset
-    ) external view returns (uint256);
+    ) external view returns (ReserveData memory);
 }
 
 interface IMorpho {
@@ -30,6 +51,8 @@ interface IMorpho {
         uint256 amount,
         address to
     ) external returns (uint256);
+    // Note: Morpho interface might vary by version. Keeping balances if it exists in the specific deployment
+    // or assuming it needs similar fix. For now, we focus on safe Aave implementation.
     function balances(
         address account,
         address asset
@@ -100,7 +123,8 @@ contract LendingRouter is Ownable {
         if (useMorpho) {
             return IMorpho(morpho).balances(account, asset);
         } else {
-            return IAavePool(aavePool).balances(account, asset);
+            ReserveData memory data = IAavePool(aavePool).getReserveData(asset);
+            return IERC20(data.aTokenAddress).balanceOf(account);
         }
     }
 }

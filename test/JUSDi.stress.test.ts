@@ -49,17 +49,38 @@ describe("jUSDi Final Production Audit & Stress Test", function () {
         rebalancingEngine = await RebalancingEngineFactory.deploy(owner.address, await oracle.getAddress());
 
         const MockLendingFactory = await ethers.getContractFactory("MockLending");
+        const MockATokenFactory = await ethers.getContractFactory("MockAToken");
         mockAave = await MockLendingFactory.deploy();
         mockMorpho = await MockLendingFactory.deploy();
+
+        // Setup Mock Aave assets
+        const aUsdc = await MockATokenFactory.deploy("Aave USDC", "aUSDC", await usdc.getAddress(), owner.address);
+        const aUsdt = await MockATokenFactory.deploy("Aave USDT", "aUSDT", await usdt.getAddress(), owner.address); // Need aUSDT for stress test? Maybe.
+
+        // Transfer ownership to MockLending
+        await aUsdc.transferOwnership(await mockAave.getAddress());
+        await aUsdt.transferOwnership(await mockAave.getAddress());
+
+        await mockAave.initAsset(await usdc.getAddress(), await aUsdc.getAddress());
+        await mockAave.initAsset(await usdt.getAddress(), await aUsdt.getAddress());
+
 
         const LendingRouterFactory = await ethers.getContractFactory("LendingRouter");
         lendingRouter = await LendingRouterFactory.deploy(owner.address, await mockAave.getAddress(), await mockMorpho.getAddress());
 
+        // Deploy Mock LayerZero Endpoint
+        const MockLZEndpointFactory = await ethers.getContractFactory("MockLZEndpoint");
+        const mockLzEndpoint = await MockLZEndpointFactory.deploy();
+
+        // Deploy JUSDi Token
+        const JUSDiFactory = await ethers.getContractFactory("JUSDi");
+        // args: _lzEndpoint, _delegate
+        const jusdiToken = await JUSDiFactory.deploy(await mockLzEndpoint.getAddress(), owner.address);
+
         const JUSDiVaultFactory = await ethers.getContractFactory("contracts/vaults/jUSDi/JUSDiVault.sol:JUSDiVault");
         vault = await JUSDiVaultFactory.deploy(
             await usdc.getAddress(),
-            "Jubilee USD Index",
-            "jUSDi",
+            await jusdiToken.getAddress(),
             owner.address,
             await riskScoring.getAddress(),
             await emergencyManager.getAddress(),
@@ -67,6 +88,12 @@ describe("jUSDi Final Production Audit & Stress Test", function () {
             await rebalancingEngine.getAddress(),
             await lendingRouter.getAddress()
         );
+
+        // Unpause token before transfer
+        await jusdiToken.unpause();
+
+        // Grant Vault Minter Role (Owner)
+        await jusdiToken.transferOwnership(await vault.getAddress());
 
         // 2. Setup Relationships
         await lendingRouter.transferOwnership(await vault.getAddress());

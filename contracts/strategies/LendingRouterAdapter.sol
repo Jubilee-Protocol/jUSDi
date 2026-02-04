@@ -94,26 +94,41 @@ contract LendingRouterAdapter is IStrategy, Ownable {
     }
 
     /**
-     * @notice Harvest yield (for Aave, yield accrues automatically)
-     * @return harvested The amount of yield harvested (0 for Aave auto-compound)
+     * @notice Harvest yield (accrued in the underlying protocol)
+     * @return harvested The amount of yield harvested (based on balance growth)
      */
     function harvest() external override onlyVault returns (uint256 harvested) {
-        // Aave auto-compounds, so we just update our tracking
-        uint256 current = totalAssets();
-        if (current > _depositedAssets) {
-            harvested = current - _depositedAssets;
-            _depositedAssets = current;
+        uint256 currentBalance = totalAssets();
+        // Since we don't hold the tokens directly (the Router does), we calculate yield based on growth
+        // The Router's balance grows due to Aave auto-compounding.
+        if (currentBalance > _depositedAssets) {
+            harvested = currentBalance - _depositedAssets;
+            // We assume the yield is 'realized' by updating our high-water mark.
+            // In a real harvest, we might want to withdraw the yield or mint fees.
+            // Here we just account for it so the Vault knows share price increased.
+            _depositedAssets = currentBalance;
         }
         return harvested;
     }
 
     /**
      * @notice Get total assets in the lending protocol
-     * @dev Uses internal tracking instead of external call for reliability
+     * @dev Queries the LendingRouter for the actual balance (principal + interest)
      */
     function totalAssets() public view override returns (uint256) {
-        // Use internal tracking - external call to Aave/Morpho may fail
-        // on non-standard networks or when pools are paused
-        return _depositedAssets;
+        // The LendingRouter holds the assets on behalf of itself (and thus this strategy)
+        // We query the Router's balance in Aave/Morpho
+        try
+            lendingRouter.getBalance(
+                address(lendingRouter),
+                address(asset),
+                useMorpho
+            )
+        returns (uint256 val) {
+            return val;
+        } catch {
+            // Fallback for safety, though relying on this is dangerous if yield is high
+            return _depositedAssets;
+        }
     }
 }

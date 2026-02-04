@@ -44,3 +44,4 @@ yarn-error.log*
 
 # Deployment artifacts (keep these locally)
 deployment-*.json
+test-ledger/
