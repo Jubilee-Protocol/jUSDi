@@ -46,10 +46,20 @@ export default function Home() {
               </button>
             </div>
 
-            {/* Live Badge */}
-            <div className="inline-flex items-center gap-2 bg-primary/10 border border-primary/30 rounded-full px-5 py-2.5 mb-10">
-              <span className="w-2 h-2 bg-success rounded-full animate-pulse" />
-              <span className="text-sm text-primary font-medium">Live on Base Sepolia</span>
+            {/* Live Badge + Faucet Link */}
+            <div className="flex flex-col sm:flex-row items-center gap-3 mb-10">
+              <div className="inline-flex items-center gap-2 bg-primary/10 border border-primary/30 rounded-full px-5 py-2.5">
+                <span className="w-2 h-2 bg-success rounded-full animate-pulse" />
+                <span className="text-sm text-primary font-medium">Live on Base Sepolia</span>
+              </div>
+              <a
+                href="https://www.alchemy.com/faucets/base-sepolia"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="text-sm text-text-secondary hover:text-primary transition-colors underline"
+              >
+                Need testnet ETH? Get from faucet →
+              </a>
             </div>
 
             {/* Hero Headline - Updates based on mode */}

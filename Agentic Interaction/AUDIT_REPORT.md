@@ -1,7 +1,7 @@
 # JubileeYieldStream Security Audit Report
 
 **Audit Date:** February 4, 2026  
-**Auditor:** Jubilee Labs Internal Security  
+**Auditor:** Jubilee Labs
 **Scope:** JubileeYieldStream EVM & Solana Contracts  
 **Status:** ✅ PRODUCTION READY
 
