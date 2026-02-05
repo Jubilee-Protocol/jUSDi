@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { Providers } from "@/components/Providers";
 import { ModeProvider } from "@/context/ModeContext";
 import { Header } from "@/components/Header";
+import { Footer } from "@/components/Footer";
 import "./globals.css";
 
 export const metadata: Metadata = {
@@ -46,9 +47,10 @@ export default function RootLayout({
         <Providers>
           <ModeProvider>
             <Header />
-            <main className="pt-16">
+            <main className="pt-16 min-h-[calc(100vh-120px)]">
               {children}
             </main>
+            <Footer />
           </ModeProvider>
         </Providers>
       </body>
