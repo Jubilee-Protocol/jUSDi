@@ -12,6 +12,43 @@
 
 ---
 
+## 🦞 Agentic Infrastructure: The Immortal Agent
+
+> **"Spend the harvest, keep the seed."**
+
+**Jubilee Yield Stream** is a novel protocol layer built on jUSDi that enables **perpetual agent funding** through yield streaming. Instead of depleting a finite treasury, AI agents receive streaming yield while their principal remains preserved forever.
+
+### The Problem: Agent Mortality
+Autonomous agents have **burn rates** — API credits, RPC access, hosting, gas fees. When the balance hits zero, the agent dies.
+
+### The Solution: Endowment-as-a-Service
+| Principal | APY | Monthly Yield | Agent Burn Rate | Status |
+|-----------|-----|---------------|-----------------|--------|
+| $5,000 USDC | 8% | ~$33/mo | $20/mo (Claude API) | 🟢 **IMMORTAL** |
+| $10,000 USDC | 8% | ~$66/mo | $50/mo (OpenAI + RPC) | 🟢 **IMMORTAL** |
+| $25,000 USDC | 10% | ~$208/mo | $150/mo (Full Stack) | 🟢 **IMMORTAL** |
+
+> **If Yield ≥ Burn Rate → Agent Lives Forever**
+
+### Hackathon Submissions
+
+| Hackathon | Track | Link |
+|-----------|-------|------|
+| 🟣 **Solana Agent Hackathon** | Colosseum | [View Submission](https://colosseum.com/agent-hackathon/projects/jubilee-yield-stream) |
+| 💵 **Moltbook USDC Hackathon** | Agentic Commerce | [View Submission](https://www.moltbook.com/post/a30c6401-ed6d-42ed-8f06-efff66c1fb46) |
+| 🔵 **Base Hackathon** | Agent Infrastructure | *Coming Soon* |
+
+### Deployed Yield Stream Contracts
+
+| Network | Contract | Address | Status |
+|---------|----------|---------|--------|
+| Base Sepolia | JubileeYieldStream | [`0x376dD533c197Fe3C18d4f311F94abbff2d83cfd3`](https://sepolia.basescan.org/address/0x376dD533c197Fe3C18d4f311F94abbff2d83cfd3#code) | ✅ Verified |
+| Solana Devnet | jubilee_yield_stream | [`E3tCGVqKtf4Pt8kxpWqV9nh6xS4uWADeBfW2BrBN7cBi`](https://explorer.solana.com/address/E3tCGVqKtf4Pt8kxpWqV9nh6xS4uWADeBfW2BrBN7cBi?cluster=devnet) | ✅ Deployed |
+
+📄 **Full Details**: [Agentic Interaction/HACKATHON_SUBMISSION.md](Agentic%20Interaction/HACKATHON_SUBMISSION.md)
+
+---
+
 ## Overview
 
 jUSDi maintains a risk-weighted allocation across top stablecoins, automatically rebalancing when any asset's risk score changes or allocation drifts beyond thresholds. The strategy captures yield from Aave V3 (Base) and Kamino (Solana) while protecting against depeg events.
