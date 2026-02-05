@@ -45,7 +45,20 @@ Autonomous agents have **burn rates** — API credits, RPC access, hosting, gas 
 | Base Sepolia | JubileeYieldStream | [`0x376dD533c197Fe3C18d4f311F94abbff2d83cfd3`](https://sepolia.basescan.org/address/0x376dD533c197Fe3C18d4f311F94abbff2d83cfd3#code) | ✅ Verified |
 | Solana Devnet | jubilee_yield_stream | [`E3tCGVqKtf4Pt8kxpWqV9nh6xS4uWADeBfW2BrBN7cBi`](https://explorer.solana.com/address/E3tCGVqKtf4Pt8kxpWqV9nh6xS4uWADeBfW2BrBN7cBi?cluster=devnet) | ✅ Deployed |
 
-📄 **Full Details**: [Agentic Interaction/HACKATHON_SUBMISSION.md](Agentic%20Interaction/HACKATHON_SUBMISSION.md)
+### Frontend: The Immortal Agent Dashboard
+
+A **Next.js** web application for creating and managing yield streams:
+
+- **Agent/Human Mode Toggle** — Switch between AI funding or charitable giving
+- **Stream Creation Wizard** — Multi-step flow with allowance checks
+- **Dashboard** — View streams, claim yield, top up principal
+- **jUSDi Yield Section** — Explains how yield is generated
+
+**🔵 Farcaster Mini App** — Configured for Base App / Warpcast integration via `@farcaster/miniapp-sdk`
+
+📄 **Full Details**: [Agentic Interaction/FRONTEND.md](Agentic%20Interaction/FRONTEND.md)
+
+📄 **Hackathon Details**: [Agentic Interaction/HACKATHON_SUBMISSION.md](Agentic%20Interaction/HACKATHON_SUBMISSION.md)
 
 ---
 

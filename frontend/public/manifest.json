@@ -1,0 +1,21 @@
+{
+    "name": "Jubilee Yield Stream",
+    "short_name": "jUSDi",
+    "description": "Perpetual yield streams for AI agents and causes - deposit USDC for eternal funding",
+    "iconPath": "./jubilee-logo-pink.png",
+    "icons": [
+        {
+            "src": "./jubilee-logo-pink.png",
+            "type": "image/png",
+            "sizes": "512x512"
+        }
+    ],
+    "start_url": "/",
+    "display": "standalone",
+    "background_color": "#0a0b0f",
+    "theme_color": "#0052FF",
+    "providedBy": {
+        "name": "Jubilee Labs",
+        "url": "https://jubileelabs.xyz"
+    }
+}
