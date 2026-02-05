@@ -186,7 +186,7 @@ jUSDi/
 │   └── VISION.md                 # UI Specification
 ├── test/
 │   └── JubileeYieldStream.test.ts
-└── frontend/                      # Coming Soon
+└── frontend/                      # Next.js web app (Ready)
 ```
 
 ---

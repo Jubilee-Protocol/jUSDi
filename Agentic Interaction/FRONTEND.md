@@ -24,8 +24,9 @@ This frontend provides:
 
 | Network | Frontend | Status |
 |---------|----------|--------|
-| Base Sepolia | [TBD - Netlify] | 🔄 In Development |
-| Base Mainnet | [TBD] | ⏳ Coming Soon |
+| Local Dev | http://localhost:3000 | ✅ Running |
+| Base Sepolia | Netlify deployment pending | 🔄 Ready to Deploy |
+| Base Mainnet | Production deployment | ⏳ After Testnet |
 
 ## Farcaster Mini App
 
