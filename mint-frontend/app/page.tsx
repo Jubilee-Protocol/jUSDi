@@ -89,6 +89,21 @@ const STRATEGY_ABI = [
         inputs: [],
         outputs: [{ type: 'uint256' }]
     },
+    // ERC4626 V3 functions
+    {
+        name: 'totalAssets',
+        type: 'function',
+        stateMutability: 'view',
+        inputs: [],
+        outputs: [{ type: 'uint256' }]
+    },
+    {
+        name: 'paused',
+        type: 'function',
+        stateMutability: 'view',
+        inputs: [],
+        outputs: [{ type: 'bool' }]
+    },
 ] as const;
 
 const ERC20_ABI = [
@@ -257,6 +272,7 @@ export default function Home() {
     const [showOnramp, setShowOnramp] = useState(false);
     const [showTvlInUsd, setShowTvlInUsd] = useState(true); // Toggle between USD and USD display
     const [txHistory, setTxHistory] = useState<TxHistoryItem[]>([]);
+    const [userPrincipal, setUserPrincipal] = useState<number>(0); // Track user's deposited principal for yield calculation
 
     // Mini app detection and frame readiness
     const isMiniApp = useIsMiniApp();
@@ -357,6 +373,11 @@ export default function Home() {
             if (saved) {
                 setTxHistory(JSON.parse(saved));
             }
+            // Load user principal for yield calculation
+            const savedPrincipal = localStorage.getItem(`jusdi-principal-${address}`);
+            if (savedPrincipal) {
+                setUserPrincipal(parseFloat(savedPrincipal) || 0);
+            }
         }
     }, [address]);
 
@@ -381,11 +402,17 @@ export default function Home() {
         }
     }, []);
 
-    // Handle transaction success toasts and history
     useEffect(() => {
         if (isDepositSuccess && depositHash) {
             setToast({ message: 'Deposit successful! You received jUSDi tokens.', type: 'success' });
             saveTxToHistory('deposit', depositAmount, depositHash);
+            // Track user principal for yield calculation
+            if (address) {
+                const amt = parseFloat(depositAmount) || 0;
+                const newPrincipal = userPrincipal + amt;
+                setUserPrincipal(newPrincipal);
+                localStorage.setItem(`jusdi-principal-${address}`, String(newPrincipal));
+            }
             setDepositAmount('');
         }
     }, [isDepositSuccess]);
@@ -394,6 +421,13 @@ export default function Home() {
         if (isRedeemSuccess && redeemHash) {
             setToast({ message: 'Withdrawal successful! USDC sent to your wallet.', type: 'success' });
             saveTxToHistory('withdraw', depositAmount, redeemHash);
+            // Reduce principal on withdrawal (proportionally)
+            if (address) {
+                const amt = parseFloat(depositAmount) || 0;
+                const newPrincipal = Math.max(0, userPrincipal - amt);
+                setUserPrincipal(newPrincipal);
+                localStorage.setItem(`jusdi-principal-${address}`, String(newPrincipal));
+            }
             setDepositAmount('');
         }
     }, [isRedeemSuccess]);
@@ -483,11 +517,11 @@ export default function Home() {
     const strategyAddress = contracts.strategy as `0x${string}`;
     const USDCAddress = contracts.USDC as `0x${string}`;
 
-    // Read contract data
-    const { data: strategyStatus, refetch: refetchStatus, isLoading: isLoadingStatus } = useReadContract({
+    // Read TVL directly from ERC4626 totalAssets (V3)
+    const { data: totalAssetsRaw, refetch: refetchStatus, isLoading: isLoadingStatus } = useReadContract({
         address: strategyAddress,
         abi: STRATEGY_ABI,
-        functionName: 'getStrategyStatus',
+        functionName: 'totalAssets',
     });
 
     // Read deposit cap
@@ -531,10 +565,11 @@ export default function Home() {
 
     const shareRatioDisplay = shareRatio ? (Number(formatUnits(shareRatio, USDC_DECIMALS))).toFixed(6) : '1.000000';
 
-    // Allocation percentages - for jUSDi these represent USDC/USDT split
-    const usdtPercent = strategyStatus ? Number(strategyStatus.wbtcAlloc) / 100 : 50;
-    const usdcPercent = strategyStatus ? Number(strategyStatus.cbbtcAlloc) / 100 : 50;
-    const totalHoldings = strategyStatus ? Number(formatUnits(strategyStatus.totalHoldings, USDC_DECIMALS)) : 0;
+    // Allocation percentages - for jUSDi these represent USDC/USDT split (hardcoded for now)
+    const usdtPercent = 50;
+    const usdcPercent = 50;
+    // TVL from V3 totalAssets()
+    const totalHoldings = totalAssetsRaw ? Number(formatUnits(totalAssetsRaw, USDC_DECIMALS)) : 0;
     const depositUsdValue = parseFloat(depositAmount || '0'); // 1 USDC = $1
 
     // Handle deposit
@@ -1262,20 +1297,31 @@ export default function Home() {
 
                         {/* User Balances */}
                         {isConnected && (
-                            <div style={{ display: 'flex', justifyContent: 'center', gap: '24px', marginTop: '16px', fontSize: '13px', color: c.textMuted }}>
+                            <div style={{ display: 'flex', justifyContent: 'center', gap: '24px', marginTop: '16px', fontSize: '13px', color: c.textMuted, flexWrap: 'wrap' }}>
                                 <span>
                                     Your USDC: <strong style={{ color: '#0052FF' }}>{USDCBalance ? parseFloat(formatUnits(USDCBalance, USDC_DECIMALS)).toFixed(4) : '0'}</strong>
                                 </span>
                                 <span>
                                     Your jUSDi: <strong style={{ color: '#FFA500' }}>{jUSDiBalance ? parseFloat(formatUnits(jUSDiBalance, JUSDI_DECIMALS)).toFixed(4) : '0'}</strong>
                                 </span>
+                                {userPrincipal > 0 && jUSDiBalance && shareRatio && (
+                                    <span>
+                                        Your Yield: <strong style={{ color: '#22C55E' }}>
+                                            {(() => {
+                                                const currentValue = parseFloat(formatUnits(jUSDiBalance, JUSDI_DECIMALS)) * parseFloat(formatUnits(shareRatio, USDC_DECIMALS));
+                                                const yieldEarned = currentValue - userPrincipal;
+                                                return yieldEarned > 0 ? `+$${yieldEarned.toFixed(4)}` : `$${yieldEarned.toFixed(4)}`;
+                                            })()}
+                                        </strong>
+                                    </span>
+                                )}
                             </div>
                         )}
 
                         {/* Status & Links */}
                         <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', gap: '20px', marginTop: '20px', fontSize: '14px', flexWrap: 'wrap' }}>
-                            <span style={{ color: isMaintenanceMode ? '#F59E0B' : (strategyStatus?.isPaused ? '#EF4444' : '#22C55E') }}>
-                                ● {isMaintenanceMode ? 'Maintenance' : (strategyStatus?.isPaused ? 'Paused' : 'Active')}
+                            <span style={{ color: isMaintenanceMode ? '#F59E0B' : '#22C55E' }}>
+                                ● {isMaintenanceMode ? 'Maintenance' : 'Active'}
                             </span>
                             <a href="https://basescan.org/address/0x26c39532C0dD06C0c4EddAeE36979626b16c77aC" target="_blank" rel="noopener noreferrer" style={{ color: c.textLight }}>
                                 Contract ↗
