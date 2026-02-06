@@ -407,7 +407,7 @@ export default function Home() {
 
             // Refetch allowance for next time, then deposit directly
             refetchAllowance().then(() => {
-                const amountWei = parseUnits(depositAmount, 8);
+                const amountWei = parseUnits(depositAmount, USDC_DECIMALS);
                 depositAssets({
                     address: strategyAddress,
                     abi: STRATEGY_ABI,
@@ -494,7 +494,7 @@ export default function Home() {
         abi: STRATEGY_ABI,
         functionName: 'depositCap',
     });
-    const depositCap = depositCapRaw ? Number(formatUnits(depositCapRaw, 8)) : 100;
+    const depositCap = depositCapRaw ? Number(formatUnits(depositCapRaw, USDC_DECIMALS)) : 100;
 
     const { data: USDCBalance, refetch: refetchCbUSD } = useReadContract({
         address: USDCAddress,
@@ -540,7 +540,7 @@ export default function Home() {
         if (!address || !depositAmount) return;
 
         try {
-            const amountWei = parseUnits(depositAmount, 8);
+            const amountWei = parseUnits(depositAmount, USDC_DECIMALS);
 
             if (!allowance || allowance < amountWei) {
                 setToast({ message: 'Approving USDC (one-time)...', type: 'pending' });
@@ -573,7 +573,7 @@ export default function Home() {
         if (!address || !depositAmount) return;
 
         try {
-            const sharesWei = parseUnits(depositAmount, 8);
+            const sharesWei = parseUnits(depositAmount, USDC_DECIMALS);
             setToast({ message: 'Withdrawing USDC...', type: 'pending' });
             redeemShares({
                 address: strategyAddress,
