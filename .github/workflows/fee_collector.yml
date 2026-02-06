@@ -9,11 +9,11 @@ on:
       network:
         description: 'Network to collect fees from'
         required: true
-        default: 'baseSepolia'
+        default: 'base'
         type: choice
         options:
-          - baseSepolia
           - base
+          - baseSepolia
 
 jobs:
   collect-fees:
@@ -30,18 +30,19 @@ jobs:
       - name: Install dependencies
         run: npm ci
 
+      - name: Collect fees (Base Mainnet)
+        if: github.event.inputs.network == 'base' || github.event_name == 'schedule'
+        env:
+          RPC_URL: https://mainnet.base.org
+          KEEPER_PRIVATE_KEY: ${{ secrets.KEEPER_PRIVATE_KEY }}
+          VAULT_ADDRESS: '0x0B03463259d5041004290822444c4183aE936050'
+        run: node scripts/keeper/collect_fees.js
+
       - name: Collect fees (Base Sepolia)
-        if: github.event.inputs.network == 'baseSepolia' || github.event_name == 'schedule'
+        if: github.event.inputs.network == 'baseSepolia'
         env:
           RPC_URL: https://sepolia.base.org
           KEEPER_PRIVATE_KEY: ${{ secrets.KEEPER_PRIVATE_KEY }}
           VAULT_ADDRESS: '0xc698e233fbb9810ae0f22e154ee0912fa188c69c'
         run: node scripts/keeper/collect_fees.js
 
-      - name: Collect fees (Base Mainnet)
-        if: github.event.inputs.network == 'base'
-        env:
-          RPC_URL: https://mainnet.base.org
-          KEEPER_PRIVATE_KEY: ${{ secrets.KEEPER_PRIVATE_KEY }}
-          VAULT_ADDRESS: ${{ secrets.MAINNET_VAULT_ADDRESS }}
-        run: node scripts/keeper/collect_fees.js
