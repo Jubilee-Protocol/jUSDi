@@ -1,10 +1,9 @@
 # jUSDi - The Stablecoin Index Fund
 
 ![Jubilee Protocol](https://img.shields.io/badge/Jubilee-Protocol-pink)
-
 ![License](https://img.shields.io/badge/license-MIT-blue)
-
 ![Base](https://img.shields.io/badge/Base-Mainnet-green)
+
 ![Solana](https://img.shields.io/badge/Solana-Devnet-purple)
 ![Ethereum](https://img.shields.io/badge/Ethereum-Sepolia-blue)
 
