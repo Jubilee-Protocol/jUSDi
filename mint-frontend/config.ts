@@ -54,9 +54,11 @@ export const CONTRACTS = {
         aavePool: '0xA238Dd80C259a72e81d7e4664a9801593F98d1c5', // Aave V3 Lending Pool
         aUSDC: '0x98c23e9d8f34fefb1b7bd6a91b7ff122f4e16f5c',    // Aave V3 aUSDC
     },
-    // Base Sepolia (testnet)
+    // Base Sepolia (testnet) - DEPLOYED Feb 6 2026
     testnet: {
-        strategy: '0xc698e233fbB9810Ae0F22e154Ee0912Fa188C69c', // jUSDi Vault (Testnet)
+        strategy: '0x878189d149CcF6277B7cd267A752c925103d260F', // LendingRouterAdapter
+        vault: '0xc698e233fbb9810ae0f22e154ee0912fa188c69c',    // Existing Vault
+        lendingRouter: '0x939d3D40b03a8F8f907E36eD4Cf31C7831DF29FD', // LendingRouter
         USDC: '0x036CbD53842c5426634e7929541eC2318f3dCF7e',     // Mock USDC for testnet
         USDT: '0x5ed96C75f5F04A94308623A8828B819E7Ef60B1c',     // Mock USDT for testnet
     }
