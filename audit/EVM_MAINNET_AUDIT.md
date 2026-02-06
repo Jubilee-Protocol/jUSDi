@@ -33,6 +33,8 @@ The Jan 25, 2026 audit found critical issues. **All fixed:**
 | C-01 | Missing withdraw function | ✅ Fixed (ERC4626 compliant) |
 | C-02 | Deposit doesn't mint shares | ✅ Fixed (full ERC4626) |
 | **C-03** | **LendingRouter owned by Adapter not Vault** | ✅ Fixed (Feb 6 - deployed v2) |
+| **C-04** | **jUSDi token started PAUSED** | ✅ Fixed (Feb 6 - unpause()) |
+| **C-05** | **jUSDi owner was deployer not Vault** | ✅ Fixed (Feb 6 - transferOwnership) |
 | M-01 | Strategy harvest returns 0 | ✅ Fixed (tracks yield) |
 | M-02 | No slippage protection | ⚠️ Partial (single protocol) |
 
