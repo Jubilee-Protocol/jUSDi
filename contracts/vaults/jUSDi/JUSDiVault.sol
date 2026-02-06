@@ -15,7 +15,8 @@ import "../../JUSDi.sol";
 /**
  * @title JUSDiVault
  * @notice Jubilee USD Index Vault - ERC4626 compliant.
- * @dev Manages USDC, USDT, DAI, and USDS with automated risk-based rebalancing and yield optimization.
+ * @dev Manages USDC and USDT with automated risk-based rebalancing and yield optimization.
+ *      These two stablecoins offer the deepest liquidity in the market.
  */
 contract JUSDiVault is ERC4626, Ownable, ReentrancyGuard {
     using SafeERC20 for IERC20;

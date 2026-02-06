@@ -1,0 +1,63 @@
+import { http, createConfig } from 'wagmi'
+import { base, baseSepolia } from 'wagmi/chains'
+import { connectorsForWallets } from '@rainbow-me/rainbowkit'
+import { safe } from 'wagmi/connectors'
+import {
+    rainbowWallet,
+    walletConnectWallet,
+    coinbaseWallet,
+    metaMaskWallet,
+    safeWallet
+} from '@rainbow-me/rainbowkit/wallets'
+import { farcasterMiniApp } from '@farcaster/miniapp-wagmi-connector'
+
+// Create connectors with Farcaster mini app support + Safe wallet
+const connectors = connectorsForWallets(
+    [
+        {
+            groupName: 'Recommended',
+            wallets: [coinbaseWallet, metaMaskWallet, rainbowWallet, walletConnectWallet, safeWallet],
+        },
+    ],
+    {
+        appName: 'jUSDi - Jubilee USD Index',
+        projectId: '6f385306b6aa92e6c664d8e5759748c2',
+    }
+)
+
+// Create config with Safe connector + Farcaster + RainbowKit wallets
+export const config = createConfig({
+    chains: [base, baseSepolia],
+    connectors: [
+        safe({
+            allowedDomains: [/app\.safe\.global$/],
+            debug: false,
+        }),
+        farcasterMiniApp(), // Farcaster mini app connector (auto-connects in Base App)
+        ...connectors,
+    ],
+    transports: {
+        [base.id]: http('https://mainnet.base.org'),
+        [baseSepolia.id]: http('https://sepolia.base.org'),
+    },
+})
+
+// Contract addresses
+export const CONTRACTS = {
+    // Base Mainnet - jUSDi (USDC + USDT Index)
+    mainnet: {
+        strategy: '0x0000000000000000000000000000000000000000', // TBD - Deploy JUSDiVault
+        vault: '0x0000000000000000000000000000000000000000',    // Not needed, strategy IS the vault
+        USDC: '0x833589fCD6eDb6E08f4c7C32D4f71b54bdA02913',     // Native USDC on Base
+        USDT: '0xfde4C96c8593536E31F229EA8f37b2ADa2699bb2',     // Bridged USDT on Base
+        // Aave V3 Yield Pools
+        aavePool: '0xA238Dd80C259a72e81d7e4664a9801593F98d1c5', // Aave V3 Lending Pool
+        aUSDC: '0x98c23e9d8f34fefb1b7bd6a91b7ff122f4e16f5c',    // Aave V3 aUSDC
+    },
+    // Base Sepolia (testnet)
+    testnet: {
+        strategy: '0xc698e233fbB9810Ae0F22e154Ee0912Fa188C69c', // jUSDi Vault (Testnet)
+        USDC: '0x036CbD53842c5426634e7929541eC2318f3dCF7e',     // Mock USDC for testnet
+        USDT: '0x5ed96C75f5F04A94308623A8828B819E7Ef60B1c',     // Mock USDT for testnet
+    }
+}
