@@ -9,7 +9,7 @@ on:
       force_rebalance:
         description: 'Force rebalance regardless of drift'
         required: false
-        default: 'false'
+        default: false
         type: boolean
 
 env:
