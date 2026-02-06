@@ -126,6 +126,8 @@ type Theme = 'light' | 'dark';
 
 // USDC uses 6 decimals on Base mainnet
 const USDC_DECIMALS = 6;
+// jUSDi uses 18 decimals (standard ERC20)
+const JUSDI_DECIMALS = 18;
 
 // Get gradient style based on theme
 const getGradientStyle = (theme: Theme) => ({
@@ -1017,7 +1019,7 @@ export default function Home() {
                                             Balance: <span style={{ color: c.text, fontWeight: '500' }}>
                                                 {activeTab === 'deposit'
                                                     ? (USDCBalance ? parseFloat(formatUnits(USDCBalance, USDC_DECIMALS)).toFixed(4) : '0.00')
-                                                    : (jUSDiBalance ? parseFloat(formatUnits(jUSDiBalance, USDC_DECIMALS)).toFixed(4) : '0.00')
+                                                    : (jUSDiBalance ? parseFloat(formatUnits(jUSDiBalance, JUSDI_DECIMALS)).toFixed(4) : '0.00')
                                                 }
                                             </span>
                                         </span>
@@ -1265,7 +1267,7 @@ export default function Home() {
                                     Your USDC: <strong style={{ color: '#0052FF' }}>{USDCBalance ? parseFloat(formatUnits(USDCBalance, USDC_DECIMALS)).toFixed(4) : '0'}</strong>
                                 </span>
                                 <span>
-                                    Your jUSDi: <strong style={{ color: '#FFA500' }}>{jUSDiBalance ? parseFloat(formatUnits(jUSDiBalance, USDC_DECIMALS)).toFixed(4) : '0'}</strong>
+                                    Your jUSDi: <strong style={{ color: '#FFA500' }}>{jUSDiBalance ? parseFloat(formatUnits(jUSDiBalance, JUSDI_DECIMALS)).toFixed(4) : '0'}</strong>
                                 </span>
                             </div>
                         )}
@@ -1275,7 +1277,7 @@ export default function Home() {
                             <span style={{ color: isMaintenanceMode ? '#F59E0B' : (strategyStatus?.isPaused ? '#EF4444' : '#22C55E') }}>
                                 ● {isMaintenanceMode ? 'Maintenance' : (strategyStatus?.isPaused ? 'Paused' : 'Active')}
                             </span>
-                            <a href="https://basescan.org/address/0x0B03463259d5041004290822444c4183aE936050" target="_blank" rel="noopener noreferrer" style={{ color: c.textLight }}>
+                            <a href="https://basescan.org/address/0x26c39532C0dD06C0c4EddAeE36979626b16c77aC" target="_blank" rel="noopener noreferrer" style={{ color: c.textLight }}>
                                 Contract ↗
                             </a>
                             <a href="https://github.com/Jubilee-Protocol/jUSDi/blob/main/docs/RED_TEAM_EVM_AUDIT.md" target="_blank" rel="noopener noreferrer" style={{ color: c.textLight }}>
