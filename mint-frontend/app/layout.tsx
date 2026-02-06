@@ -34,7 +34,7 @@ export const metadata: Metadata = {
         images: ['https://base.jusdi.xyz/og-image.png'],
     },
     other: {
-        'base:app_id': '6960e2c68a6eeb04b568d951',
+        'base:app_id': '6985fdf8785494a0fe86a54e',
         'fc:miniapp': JSON.stringify({
             version: 'next',
             imageUrl: 'https://base.jusdi.xyz/og-image.png',
