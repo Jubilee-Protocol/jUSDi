@@ -10,8 +10,8 @@ interface OnrampModalProps {
     btcPrice: number;
 }
 
-// cbBTC contract on Base
-const CBBTC_ADDRESS = '0xcbB7C0000aB88B473b1f5aFd9ef808440eed33Bf';
+// USDC contract on Base
+const CBUSD_ADDRESS = '0xcbB7C0000aB88B473b1f5aFd9ef808440eed33Bf';
 
 export function OnrampModal({ isOpen, onClose, theme, btcPrice }: OnrampModalProps) {
     const { address, isConnected } = useAccount();
@@ -36,19 +36,19 @@ export function OnrampModal({ isOpen, onClose, theme, btcPrice }: OnrampModalPro
         success: '#22C55E',
     };
 
-    // Calculate estimated cbBTC
+    // Calculate estimated USDC
     const usdAmount = parseFloat(amount) || 0;
-    const estimatedCbBTC = btcPrice > 0 ? (usdAmount / btcPrice).toFixed(6) : '0';
+    const estimatedCbUSD = btcPrice > 0 ? (usdAmount / btcPrice).toFixed(6) : '0';
 
     const PRESET_AMOUNTS = [100, 250, 500, 1000];
 
-    // Coinbase Onramp - direct to cbBTC purchase on Base
+    // Coinbase Onramp - direct to USDC purchase on Base
     const handleCoinbase = () => {
         // Build Coinbase Onramp URL with parameters per docs:
         // https://docs.cdp.coinbase.com/onramp-&-offramp/onramp-apis/generating-onramp-url
         const params = new URLSearchParams({
             appId: 'jbtci',
-            defaultAsset: 'CBBTC',
+            defaultAsset: 'CBUSD',
             defaultNetwork: 'base',
             presetFiatAmount: amount || '100',
             fiatCurrency: 'USD',
@@ -60,7 +60,7 @@ export function OnrampModal({ isOpen, onClose, theme, btcPrice }: OnrampModalPro
             const destinationWallets = JSON.stringify([{
                 address: address,
                 blockchains: ['base'],
-                assets: ['CBBTC']
+                assets: ['CBUSD']
             }]);
             params.set('destinationWallets', destinationWallets);
         }
@@ -70,7 +70,7 @@ export function OnrampModal({ isOpen, onClose, theme, btcPrice }: OnrampModalPro
     };
 
     const handleUniswap = () => {
-        const url = `https://app.uniswap.org/swap?chain=base&outputCurrency=${CBBTC_ADDRESS}`;
+        const url = `https://app.uniswap.org/swap?chain=base&outputCurrency=${CBUSD_ADDRESS}`;
         window.open(url, '_blank');
     };
 
@@ -106,7 +106,7 @@ export function OnrampModal({ isOpen, onClose, theme, btcPrice }: OnrampModalPro
                 {/* Header */}
                 <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '24px' }}>
                     <h2 style={{ margin: 0, fontSize: '24px', fontWeight: 700, color: c.text }}>
-                        Get cbBTC
+                        Get USDC
                     </h2>
                     <button
                         onClick={onClose}
@@ -125,7 +125,7 @@ export function OnrampModal({ isOpen, onClose, theme, btcPrice }: OnrampModalPro
 
                 {/* Description */}
                 <p style={{ color: c.textLight, marginBottom: '24px', lineHeight: 1.6 }}>
-                    Get cbBTC to deposit into jBTCi. Choose your preferred method:
+                    Get USDC to deposit into jUSDi. Choose your preferred method:
                 </p>
 
                 {/* Amount Estimate */}
@@ -196,7 +196,7 @@ export function OnrampModal({ isOpen, onClose, theme, btcPrice }: OnrampModalPro
                         <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
                             <span style={{ color: c.textLight, fontSize: '14px' }}>You'll need approximately</span>
                             <span style={{ color: c.text, fontSize: '18px', fontWeight: 600 }}>
-                                {estimatedCbBTC} cbBTC
+                                {estimatedCbUSD} USDC
                             </span>
                         </div>
                     </div>
@@ -257,7 +257,7 @@ export function OnrampModal({ isOpen, onClose, theme, btcPrice }: OnrampModalPro
                         <div style={{ textAlign: 'left' }}>
                             <div>Swap on Uniswap</div>
                             <div style={{ fontSize: '12px', color: c.textLight, fontWeight: 400 }}>
-                                ETH or any token → cbBTC
+                                ETH or any token → USDC
                             </div>
                         </div>
                     </div>
@@ -276,7 +276,7 @@ export function OnrampModal({ isOpen, onClose, theme, btcPrice }: OnrampModalPro
                     }}>
                         ✓ Wallet connected: {address.slice(0, 6)}...{address.slice(-4)}
                         <br />
-                        <span style={{ color: c.textLight }}>cbBTC will be sent to this address</span>
+                        <span style={{ color: c.textLight }}>USDC will be sent to this address</span>
                     </div>
                 )}
 
@@ -288,7 +288,7 @@ export function OnrampModal({ isOpen, onClose, theme, btcPrice }: OnrampModalPro
                     color: c.textLight,
                     lineHeight: 1.6,
                 }}>
-                    After getting cbBTC, return here to deposit into jBTCi
+                    After getting USDC, return here to deposit into jUSDi
                 </div>
             </div>
         </div>

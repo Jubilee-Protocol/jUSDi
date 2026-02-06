@@ -121,7 +121,7 @@ export function TutorialModal({ isOpen, onClose, theme, btcPrice }: TutorialModa
                         fontWeight: '700',
                         margin: 0,
                     }}>
-                        {step === 1 && '💜 Welcome to jBTCi'}
+                        {step === 1 && '💜 Welcome to jUSDi'}
                         {step === 2 && '⚙️ How It Works'}
                         {step === 3 && '💰 Getting Started'}
                         {step === 4 && '🚀 Ready to Deposit'}
@@ -136,17 +136,17 @@ export function TutorialModal({ isOpen, onClose, theme, btcPrice }: TutorialModa
                     {step === 1 && (
                         <div>
                             <h3 style={{ color: c.text, fontSize: '18px', marginBottom: '16px' }}>
-                                Diversified Bitcoin, Simplified
+                                Diversified Stablecoin, Simplified
                             </h3>
                             <p style={{ color: c.textMuted, lineHeight: 1.6, marginBottom: '20px' }}>
-                                jBTCi is a Bitcoin index token that automatically diversifies your BTC
-                                across <strong>cbBTC</strong> and <strong>wBTC</strong> — the two most
-                                trusted wrapped Bitcoin tokens on Base.
+                                jUSDi is a Stablecoin index token that automatically diversifies your USD
+                                across <strong>USDC</strong> and <strong>USDT</strong> — the two most
+                                trusted wrapped Stablecoin tokens on Base.
                             </p>
                             <div style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}>
                                 <Feature icon="🔐" text="Non-custodial — You control your tokens" theme={theme} />
                                 <Feature icon="⚖️" text="Auto-rebalancing — Always 50/50 split" theme={theme} />
-                                <Feature icon="📈" text="One token — Tracks the BTC index" theme={theme} />
+                                <Feature icon="📈" text="One token — Tracks the USD index" theme={theme} />
                             </div>
                         </div>
                     )}
@@ -154,7 +154,7 @@ export function TutorialModal({ isOpen, onClose, theme, btcPrice }: TutorialModa
                     {step === 2 && (
                         <div>
                             <h3 style={{ color: c.text, fontSize: '18px', marginBottom: '16px' }}>
-                                Deposit cbBTC, Get jBTCi
+                                Deposit USDC, Get jUSDi
                             </h3>
                             {/* Visual Flow */}
                             <div style={{
@@ -165,7 +165,7 @@ export function TutorialModal({ isOpen, onClose, theme, btcPrice }: TutorialModa
                                 textAlign: 'center',
                             }}>
                                 <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '12px', flexWrap: 'wrap' }}>
-                                    <Token name="cbBTC" color="#0052FF" />
+                                    <Token name="USDC" color="#0052FF" />
                                     <Arrow />
                                     <div style={{
                                         background: c.accent,
@@ -174,10 +174,10 @@ export function TutorialModal({ isOpen, onClose, theme, btcPrice }: TutorialModa
                                         color: 'white',
                                         fontWeight: '600',
                                     }}>
-                                        jBTCi Strategy
+                                        jUSDi Strategy
                                     </div>
                                     <Arrow />
-                                    <Token name="jBTCi" color="#E040FB" />
+                                    <Token name="jUSDi" color="#E040FB" />
                                 </div>
                                 <div style={{
                                     marginTop: '16px',
@@ -187,15 +187,15 @@ export function TutorialModal({ isOpen, onClose, theme, btcPrice }: TutorialModa
                                     justifyContent: 'center',
                                     gap: '24px',
                                 }}>
-                                    <span>50% cbBTC</span>
-                                    <span>50% wBTC</span>
+                                    <span>50% USDC</span>
+                                    <span>50% USDT</span>
                                 </div>
                             </div>
                             <ol style={{ color: c.textMuted, lineHeight: 1.8, paddingLeft: '20px', margin: 0 }}>
-                                <li>Deposit your cbBTC</li>
-                                <li>Receive jBTCi tokens (1:1 ratio)</li>
+                                <li>Deposit your USDC</li>
+                                <li>Receive jUSDi tokens (1:1 ratio)</li>
                                 <li>Strategy auto-rebalances to 50/50</li>
-                                <li>Withdraw anytime to get cbBTC back</li>
+                                <li>Withdraw anytime to get USDC back</li>
                             </ol>
                         </div>
                     )}
@@ -203,23 +203,23 @@ export function TutorialModal({ isOpen, onClose, theme, btcPrice }: TutorialModa
                     {step === 3 && (
                         <div>
                             <h3 style={{ color: c.text, fontSize: '18px', marginBottom: '16px' }}>
-                                You'll Need cbBTC
+                                You'll Need USDC
                             </h3>
                             <p style={{ color: c.textMuted, lineHeight: 1.6, marginBottom: '20px' }}>
-                                Don't have cbBTC? No problem! You can get it from:
+                                Don't have USDC? No problem! You can get it from:
                             </p>
                             <div style={{ display: 'flex', flexDirection: 'column', gap: '12px', marginBottom: '20px' }}>
                                 <LinkCard
                                     icon="🏦"
                                     title="Coinbase"
-                                    subtitle="Buy and bridge cbBTC directly"
+                                    subtitle="Buy and bridge USDC directly"
                                     href="https://coinbase.com"
                                     theme={theme}
                                 />
                                 <LinkCard
                                     icon="🔄"
                                     title="Uniswap"
-                                    subtitle="Swap ETH or any token for cbBTC"
+                                    subtitle="Swap ETH or any token for USDC"
                                     href="https://app.uniswap.org/swap?chain=base&outputCurrency=0xcbB7C0000aB88B473b1f5aFd9ef808440eed33Bf"
                                     theme={theme}
                                 />
@@ -231,7 +231,7 @@ export function TutorialModal({ isOpen, onClose, theme, btcPrice }: TutorialModa
                                 padding: '16px',
                             }}>
                                 <p style={{ margin: 0, color: theme === 'dark' ? '#FCD34D' : '#92400E', fontSize: '14px' }}>
-                                    <strong>Minimum deposit:</strong> 0.01 BTC ({minDepositUSD})
+                                    <strong>Minimum deposit:</strong> 0.01 USD ({minDepositUSD})
                                 </p>
                                 <p style={{ margin: '8px 0 0', fontSize: '11px', color: theme === 'dark' ? '#a0a0b0' : '#78716c' }}>
                                     Price by <a href="https://www.coingecko.com/" target="_blank" rel="noopener noreferrer" style={{ color: 'inherit', textDecoration: 'underline' }}>CoinGecko</a>
@@ -248,8 +248,8 @@ export function TutorialModal({ isOpen, onClose, theme, btcPrice }: TutorialModa
                             <div style={{ display: 'flex', flexDirection: 'column', gap: '12px', marginBottom: '24px' }}>
                                 <Step num={1} text="Connect your wallet (top right)" theme={theme} />
                                 <Step num={2} text="Enter your deposit amount" theme={theme} />
-                                <Step num={3} text="Approve cbBTC spending (one-time)" theme={theme} />
-                                <Step num={4} text="Confirm deposit & receive jBTCi" theme={theme} />
+                                <Step num={3} text="Approve USDC spending (one-time)" theme={theme} />
+                                <Step num={4} text="Confirm deposit & receive jUSDi" theme={theme} />
                             </div>
                             <div style={{
                                 background: `linear-gradient(135deg, ${c.accent}15 0%, ${c.accent}05 100%)`,

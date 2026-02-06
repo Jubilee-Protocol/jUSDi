@@ -4,24 +4,24 @@ import './globals.css';
 import type { Metadata } from 'next';
 
 export const metadata: Metadata = {
-    title: 'jBTCi | Bitcoin Index Fund on Base',
-    description: 'The first Bitcoin Index Fund on Base. Earn yield on diversified BTC exposure through cbBTC and WBTC via Yearn V3.',
-    keywords: ['jBTCi', 'Bitcoin', 'Index Fund', 'Base', 'DeFi', 'Yearn', 'cbBTC', 'WBTC'],
+    title: 'jUSDi | Stablecoin Index on Base',
+    description: 'The Jubilee USD Index on Base. Earn yield on diversified USDC and USDT exposure via Aave V3.',
+    keywords: ['jUSDi', 'Stablecoin', 'Index Fund', 'Base', 'DeFi', 'Aave', 'USDC', 'USDT'],
     icons: {
         icon: '/jubilee-logo-pink.png',
         apple: '/jubilee-logo-pink.png',
     },
     openGraph: {
-        title: 'jBTCi | Bitcoin Index Fund on Base',
-        description: 'The first Bitcoin Index Fund on Base. Earn 6-10% APY on diversified BTC exposure.',
-        url: 'https://mint.jbtci.xyz',
-        siteName: 'jBTCi',
+        title: 'jUSDi | Stablecoin Index on Base',
+        description: 'The Jubilee USD Index on Base. Earn 8-12% APY on diversified stablecoin exposure.',
+        url: 'https://mint.jusdi.xyz',
+        siteName: 'jUSDi',
         images: [
             {
-                url: 'https://mint.jbtci.xyz/og-image.png',
+                url: 'https://mint.jusdi.xyz/og-image.png',
                 width: 625,
                 height: 625,
-                alt: 'jBTCi - Bitcoin Index Fund',
+                alt: 'jUSDi - Stablecoin Index',
             },
         ],
         locale: 'en_US',
@@ -29,23 +29,23 @@ export const metadata: Metadata = {
     },
     twitter: {
         card: 'summary_large_image',
-        title: 'jBTCi | Bitcoin Index Fund on Base',
-        description: 'The first Bitcoin Index Fund on Base. Earn 6-10% APY on diversified BTC exposure.',
-        images: ['https://mint.jbtci.xyz/og-image.png'],
+        title: 'jUSDi | Stablecoin Index on Base',
+        description: 'The Jubilee USD Index on Base. Earn 8-12% APY on diversified stablecoin exposure.',
+        images: ['https://mint.jusdi.xyz/og-image.png'],
     },
     other: {
         'base:app_id': '6960e2c68a6eeb04b568d951',
         'fc:miniapp': JSON.stringify({
             version: 'next',
-            imageUrl: 'https://mint.jbtci.xyz/og-image.png',
+            imageUrl: 'https://mint.jusdi.xyz/og-image.png',
             button: {
-                title: 'Open jBTCi',
+                title: 'Open jUSDi',
                 action: {
                     type: 'launch_frame',
-                    url: 'https://mint.jbtci.xyz',
-                    name: 'jBTCi - Bitcoin Index',
-                    splashImageUrl: 'https://mint.jbtci.xyz/splash.png',
-                    splashBackgroundColor: '#0a0a1a'
+                    url: 'https://mint.jusdi.xyz',
+                    name: 'jUSDi - Stablecoin Index',
+                    splashImageUrl: 'https://mint.jusdi.xyz/splash.png',
+                    splashBackgroundColor: '#0a0a0a'
                 }
             }
         }),

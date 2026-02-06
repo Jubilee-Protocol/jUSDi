@@ -62,7 +62,7 @@ export function FASBDashboard({ isOpen, onClose, theme, btcPrice }: FASBDashboar
         negative: '#DC2626',
     };
 
-    // Read jBTCi balance using network-aware address
+    // Read jUSDi balance using network-aware address
     const { data: jbtciBalance } = useReadContract({
         address: strategyAddress as `0x${string}`,
         abi: STRATEGY_ABI,
@@ -148,7 +148,7 @@ export function FASBDashboard({ isOpen, onClose, theme, btcPrice }: FASBDashboar
             ? `${start.toLocaleDateString()}-${end.toLocaleDateString()}`
             : `${period}-${new Date().getFullYear()}`;
 
-        const headers = ['Date', 'Type', 'Amount (BTC)', 'Cost Basis (USD)', 'Fair Value (USD)', 'Tx Hash'];
+        const headers = ['Date', 'Type', 'Amount (USD)', 'Cost Basis (USD)', 'Fair Value (USD)', 'Tx Hash'];
         const rows = transactions.map(t => [
             t.date, t.type, t.amount, t.costBasis.toFixed(2), t.fairValue.toFixed(2), t.hash
         ]);
@@ -157,7 +157,7 @@ export function FASBDashboard({ isOpen, onClose, theme, btcPrice }: FASBDashboar
         rows.push([]);
         rows.push(['FASB Fair Value Summary']);
         rows.push(['Period:', periodLabel]);
-        rows.push(['Total Holdings:', `${balanceNum.toFixed(4)} jBTCi`]);
+        rows.push(['Total Holdings:', `${balanceNum.toFixed(4)} jUSDi`]);
         rows.push(['Fair Value:', `$${fairValue.toLocaleString()}`]);
         rows.push(['Cost Basis:', `$${totalCostBasis.toLocaleString()}`]);
         rows.push(['Unrealized Gain/Loss:', `$${unrealizedGain.toLocaleString()}`]);
@@ -167,7 +167,7 @@ export function FASBDashboard({ isOpen, onClose, theme, btcPrice }: FASBDashboar
         const url = URL.createObjectURL(blob);
         const a = document.createElement('a');
         a.href = url;
-        a.download = `jBTCi-FASB-Report-${periodLabel}.csv`;
+        a.download = `jUSDi-FASB-Report-${periodLabel}.csv`;
         a.click();
     };
 
@@ -285,7 +285,7 @@ export function FASBDashboard({ isOpen, onClose, theme, btcPrice }: FASBDashboar
                         <h3 style={{ color: c.text, fontSize: '16px', margin: '0 0 16px' }}>Current Holdings</h3>
                         <div style={{ display: 'grid', gridTemplateColumns: 'repeat(2, 1fr)', gap: '16px' }}>
                             <div>
-                                <div style={{ color: c.textMuted, fontSize: '13px' }}>jBTCi Balance</div>
+                                <div style={{ color: c.textMuted, fontSize: '13px' }}>jUSDi Balance</div>
                                 <div style={{ color: c.text, fontSize: '24px', fontWeight: '700' }}>
                                     {balanceNum.toFixed(4)}
                                 </div>
@@ -377,7 +377,7 @@ export function FASBDashboard({ isOpen, onClose, theme, btcPrice }: FASBDashboar
                                                     </span>
                                                 </td>
                                                 <td style={{ padding: '12px 8px', textAlign: 'right', color: c.text }}>
-                                                    {tx.amount} BTC
+                                                    {tx.amount} USD
                                                 </td>
                                                 <td style={{ padding: '12px 8px', textAlign: 'right', color: c.text }}>
                                                     ${tx.fairValue.toLocaleString(undefined, { maximumFractionDigits: 0 })}

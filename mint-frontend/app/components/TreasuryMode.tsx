@@ -198,7 +198,7 @@ export function TreasuryMode({ isOpen, onClose, theme }: TreasuryModeProps) {
                             </h3>
 
                             <p style={{ color: c.textMuted, fontSize: '14px', lineHeight: 1.5, marginBottom: '16px' }}>
-                                Use Safe's built-in browser to access jBTCi directly:
+                                Use Safe's built-in browser to access jUSDi directly:
                             </p>
 
                             <div style={{ display: 'flex', flexDirection: 'column', gap: '12px', marginBottom: '20px' }}>
@@ -217,7 +217,7 @@ export function TreasuryMode({ isOpen, onClose, theme }: TreasuryModeProps) {
                                 marginBottom: '16px',
                             }}>
                                 <p style={{ margin: 0, color: theme === 'dark' ? '#81C784' : '#2E7D32', fontSize: '13px' }}>
-                                    ✅ <strong>Safe will connect automatically</strong> when you open jBTCi from within the Safe app!
+                                    ✅ <strong>Safe will connect automatically</strong> when you open jUSDi from within the Safe app!
                                 </p>
                             </div>
 
@@ -270,12 +270,12 @@ export function TreasuryMode({ isOpen, onClose, theme }: TreasuryModeProps) {
                                     Almost Done!
                                 </h3>
                                 <p style={{ color: c.textMuted, fontSize: '14px' }}>
-                                    Once your Safe is ready, here's how to use jBTCi:
+                                    Once your Safe is ready, here's how to use jUSDi:
                                 </p>
                             </div>
 
                             <div style={{ display: 'flex', flexDirection: 'column', gap: '12px', marginBottom: '20px' }}>
-                                <Step num={1} text="Connect your Safe to jBTCi via WalletConnect" theme={theme} />
+                                <Step num={1} text="Connect your Safe to jUSDi via WalletConnect" theme={theme} />
                                 <Step num={2} text="Any deposit/withdrawal creates a proposal" theme={theme} />
                                 <Step num={3} text="Signers review and approve in Safe app" theme={theme} />
                                 <Step num={4} text="Transaction executes after required signatures" theme={theme} />
@@ -289,7 +289,7 @@ export function TreasuryMode({ isOpen, onClose, theme }: TreasuryModeProps) {
                                 marginBottom: '16px',
                             }}>
                                 <p style={{ color: c.text, fontSize: '13px', margin: 0 }}>
-                                    📋 <strong>Example:</strong> Pastor initiates 1 BTC deposit → Treasurer approves → Deposit executes
+                                    📋 <strong>Example:</strong> Pastor initiates 1 USD deposit → Treasurer approves → Deposit executes
                                 </p>
                             </div>
 
