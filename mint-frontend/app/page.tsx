@@ -524,7 +524,7 @@ export default function Home() {
         address: strategyAddress,
         abi: STRATEGY_ABI,
         functionName: 'convertToAssets',
-        args: [BigInt(1e8)], // 1 jUSDi in wei (8 decimals)
+        args: [BigInt(1e6)], // 1 jUSDi in wei (6 decimals for USDC)
     });
 
     const shareRatioDisplay = shareRatio ? (Number(formatUnits(shareRatio, USDC_DECIMALS))).toFixed(6) : '1.000000';
@@ -910,62 +910,6 @@ export default function Home() {
                                 </div>
                             )}
 
-                            {/* v1.5 Migration Notice - Dismissible */}
-                            {showMigrationNotice && (
-                                <div style={{
-                                    background: 'linear-gradient(135deg, #DBEAFE 0%, #BFDBFE 100%)',
-                                    border: '1px solid #3B82F6',
-                                    borderRadius: '12px',
-                                    padding: '16px',
-                                    marginBottom: '24px',
-                                    display: 'flex',
-                                    alignItems: 'flex-start',
-                                    gap: '12px',
-                                    position: 'relative'
-                                }}>
-                                    <button
-                                        onClick={() => setShowMigrationNotice(false)}
-                                        style={{
-                                            position: 'absolute',
-                                            top: '8px',
-                                            right: '8px',
-                                            background: 'none',
-                                            border: 'none',
-                                            cursor: 'pointer',
-                                            fontSize: '18px',
-                                            color: '#1E40AF',
-                                            padding: '4px',
-                                            lineHeight: 1
-                                        }}
-                                        aria-label="Dismiss notice"
-                                    >
-                                        ×
-                                    </button>
-                                    <span style={{ fontSize: '20px' }}>🚀</span>
-                                    <div style={{ paddingRight: '24px' }}>
-                                        <div style={{ fontWeight: '600', color: '#1E40AF', marginBottom: '4px' }}>
-                                            jUSDi Upgraded to v1.5!
-                                        </div>
-                                        <div style={{ fontSize: '13px', color: '#1E3A8A', lineHeight: '1.4' }}>
-                                            {MIGRATION_NOTICE}
-                                        </div>
-                                        <a
-                                            href={`https://basescan.org/address/${OLD_CONTRACT}#writeContract`}
-                                            target="_blank"
-                                            rel="noopener noreferrer"
-                                            style={{
-                                                fontSize: '12px',
-                                                color: '#2563EB',
-                                                textDecoration: 'underline',
-                                                marginTop: '8px',
-                                                display: 'inline-block'
-                                            }}
-                                        >
-                                            Withdraw from old contract →
-                                        </a>
-                                    </div>
-                                </div>
-                            )}
 
                             {/* Tabs */}
                             <div style={{ display: 'flex', gap: '32px', marginBottom: '32px', borderBottom: `1px solid ${c.cardBorder}`, paddingBottom: '16px' }}>
