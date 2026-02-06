@@ -45,13 +45,14 @@ export const config = createConfig({
 
 // Contract addresses
 export const CONTRACTS = {
-    // Base Mainnet - jUSDi (USDC + USDT Index) - DEPLOYED Feb 6 2026
+    // Base Mainnet - jUSDi (USDC + USDT Index) - V3 DEPLOYED Feb 6 2026
+    // Fixed: 1 USDC now correctly mints 1 jUSDi (decimals fix applied)
     mainnet: {
-        vault: '0x0B03463259d5041004290822444c4183aE936050',    // JUSDiVault (ERC4626)
-        strategy: '0x0B03463259d5041004290822444c4183aE936050', // Alias for vault (for UI compatibility)
-        adapter: '0x15f0Eb7f49E3d35B37F9B606b966a684Ce7ebc03', // LendingRouterAdapter
-        lendingRouter: '0x90AA6bEccFcD34BE53B8742659235084337840e9', // LendingRouter (v2 - owned by Vault)
-        jusdiToken: '0x04cC650F6dB0B91Ef910a4a54F22232771988432', // jUSDi OFT Token
+        vault: '0x26c39532C0dD06C0c4EddAeE36979626b16c77aC',    // JUSDiVault V3 (ERC4626, decimals fixed)
+        strategy: '0x26c39532C0dD06C0c4EddAeE36979626b16c77aC', // Alias for vault
+        adapter: '0x15f0Eb7f49E3d35B37F9B606b966a684Ce7ebc03', // LendingRouterAdapter (legacy)
+        lendingRouter: '0x904b37FDcD045DE1DA78d3C01d7bd571d4b1a5C3', // LendingRouter V3 (owned by Vault)
+        jusdiToken: '0x7e3b8f5D81c12720cB2f4017a5FD077BbC0D827a', // jUSDi Token V3 (unpaused, owned by Vault)
         USDC: '0x833589fCD6eDb6E08f4c7C32D4f71b54bdA02913',     // Native USDC on Base
         USDT: '0xfde4C96c8593536E31F229EA8f37b2ADa2699bb2',     // Bridged USDT on Base
         // Aave V3 Yield Pools

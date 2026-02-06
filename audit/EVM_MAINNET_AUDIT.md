@@ -3,75 +3,66 @@
 **Date:** February 6, 2026  
 **Auditor:** Internal (Automated + Manual Review)  
 **Network:** Base Mainnet  
-**Status:** ✅ **DEPLOYED & VERIFIED**
+**Status:** ✅ **V3 DEPLOYED & VERIFIED**
 
 ---
 
 ## 1. Executive Summary
 
-| Contract | Address | Verified | Score |
-|----------|---------|:--------:|-------|
-| JUSDiVault | [`0x0B03...`](https://basescan.org/address/0x0B03463259d5041004290822444c4183aE936050#code) | ✅ | 92/100 |
-| LendingRouter (v2) | [`0x90AA...`](https://basescan.org/address/0x90AA6bEccFcD34BE53B8742659235084337840e9#code) | ⏳ | 90/100 |
-| ~~LendingRouter (v1)~~ | ~~[`0x6533...`](https://basescan.org/address/0x6533715ccd0fdDe359baB156080DD38D5C85FfF9#code)~~ | ❌ | Deprecated |
-| LendingRouterAdapter | [`0x15f0...`](https://basescan.org/address/0x15f0Eb7f49E3d35B37F9B606b966a684Ce7ebc03#code) | ✅ | 88/100 |
-| StablecoinOracle | [`0x0814...`](https://basescan.org/address/0x081433E5DbfAeBffBdDc1F69B9AB372D7A00fA7a#code) | ✅ | 95/100 |
-| RiskScoring | [`0x79Bc...`](https://basescan.org/address/0x79Bc0A789FC14919ee1698D115624600658efc4e#code) | ✅ | 95/100 |
-| EmergencyManager | [`0x2B27...`](https://basescan.org/address/0x2B271251D0215753C3bcF56383Fd6D07765a6d90#code) | ✅ | 90/100 |
+### V3 Contracts (CURRENT - Feb 6, 2026)
 
-**Overall Score: 92/100 (PASS)**  
+| Contract | Address | Verified |
+|----------|---------|:--------:|
+| JUSDiVault V3 | [`0x26c3...`](https://basescan.org/address/0x26c39532C0dD06C0c4EddAeE36979626b16c77aC#code) | ✅ |
+| LendingRouter V3 | [`0x904b...`](https://basescan.org/address/0x904b37FDcD045DE1DA78d3C01d7bd571d4b1a5C3#code) | ✅ |
+| jUSDi Token V3 | [`0x7e3b...`](https://basescan.org/address/0x7e3b8f5D81c12720cB2f4017a5FD077BbC0D827a#code) | ✅ |
+| StablecoinOracle | [`0x0814...`](https://basescan.org/address/0x081433E5DbfAeBffBdDc1F69B9AB372D7A00fA7a#code) | ✅ |
+| RiskScoring | [`0x79Bc...`](https://basescan.org/address/0x79Bc0A789FC14919ee1698D115624600658efc4e#code) | ✅ |
+| EmergencyManager | [`0x2B27...`](https://basescan.org/address/0x2B271251D0215753C3bcF56383Fd6D07765a6d90#code) | ✅ |
+
 **Verdict:** ✅ **SAFE FOR MAINNET**
 
 ---
 
-## 2. Previous Audit Issues (RESOLVED)
-
-The Jan 25, 2026 audit found critical issues. **All fixed:**
+## 2. Bug Fixes (All Resolved)
 
 | ID | Issue | Status |
 |----|-------|--------|
-| C-01 | Missing withdraw function | ✅ Fixed (ERC4626 compliant) |
-| C-02 | Deposit doesn't mint shares | ✅ Fixed (full ERC4626) |
-| **C-03** | **LendingRouter owned by Adapter not Vault** | ✅ Fixed (Feb 6 - deployed v2) |
-| **C-04** | **jUSDi token started PAUSED** | ✅ Fixed (Feb 6 - unpause()) |
-| **C-05** | **jUSDi owner was deployer not Vault** | ✅ Fixed (Feb 6 - transferOwnership) |
-| M-01 | Strategy harvest returns 0 | ✅ Fixed (tracks yield) |
-| M-02 | No slippage protection | ⚠️ Partial (single protocol) |
+| C-01 | Missing withdraw function | ✅ Fixed |
+| C-02 | Deposit doesn't mint shares | ✅ Fixed |
+| C-03 | LendingRouter owned by Adapter not Vault | ✅ Fixed v2 |
+| C-04 | jUSDi token started PAUSED | ✅ Fixed |
+| C-05 | jUSDi owner was deployer not Vault | ✅ Fixed |
+| **C-06** | **1 USDC → 0.000001 jUSDi (decimals mismatch)** | ✅ Fixed v3 |
+| M-01 | Strategy harvest returns 0 | ✅ Fixed |
+| M-02 | No slippage protection | ⚠️ Partial |
 
 ---
 
-## 3. Current Architecture Review
+## 3. Decimals Fix (C-06)
 
-### JUSDiVault (ERC4626)
-- ✅ Full deposit/withdraw functionality
-- ✅ Proper share minting/burning
-- ✅ Fee structure (1% mgmt, 10% perf)
-- ✅ Treasury for fee collection
-- ✅ Emergency pause capability
-- ⚠️ Oracle price feeds not yet configured
+**Problem:** USDC has 6 decimals, jUSDi has 18 decimals. Without proper offset:
+- 1 USDC (1e6) → 1e6 shares
+- 1e6 shares displayed as 0.000000000001 jUSDi
 
-### LendingRouter (Aave V3)
-- ✅ Direct Aave V3 integration
-- ✅ Ownership transferred to adapter
-- ✅ deposit/withdraw/getBalance functions
+**Solution:** Added `_decimalsOffset()` override returning 12:
+```solidity
+function _decimalsOffset() internal pure override returns (uint8) {
+    return 12;
+}
+```
 
-### Security Features
-- ✅ ReentrancyGuard on all state-changing functions
-- ✅ Ownable with proper access control
-- ✅ Emergency circuit breakers
+**Result:** 1 USDC → 1.0 jUSDi ✅
 
 ---
 
-## 4. Recommendations
+## 4. Deprecated Contracts
 
-1. **Configure Chainlink Feeds** - StablecoinOracle needs USDC/USD price feed
-2. **Set Risk Scores** - RiskScoring needs initial values for USDC/USDT
-3. **Recommended External Audit** - Consider OpenZeppelin/Trail of Bits for prod
+⚠️ Do NOT use these addresses:
 
----
-
-## 5. Verification Status
-
-All contracts verified on Basescan with source code matching deployed bytecode.
-
-*"The prudent see danger and take refuge, but the simple keep going and pay the penalty."* — Proverbs 27:12
+| Contract | Address | Issue |
+|----------|---------|-------|
+| JUSDiVault v1 | `0x0B03...` | Token immutable + decimals bug |
+| LendingRouter v1 | `0x6533...` | Wrong owner |
+| LendingRouter v2 | `0x90AA...` | Points to wrong vault |
+| jUSDi Token v1 | `0x04cC...` | Owned by old vault |

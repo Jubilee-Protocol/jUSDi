@@ -301,6 +301,15 @@ contract JUSDiVault is ERC4626, Ownable, ReentrancyGuard {
         return jusdiToken.decimals();
     }
 
+    /**
+     * @notice Offset for share calculation.
+     * @dev USDC has 6 decimals, jUSDi has 18 decimals.
+     *      Offset = 18 - 6 = 12 so that 1 USDC mints ~1 jUSDi.
+     */
+    function _decimalsOffset() internal pure override returns (uint8) {
+        return 12;
+    }
+
     function totalSupply()
         public
         view
