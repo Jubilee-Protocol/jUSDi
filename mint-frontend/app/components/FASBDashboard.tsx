@@ -10,7 +10,7 @@ interface FASBDashboardProps {
     isOpen: boolean;
     onClose: () => void;
     theme: 'light' | 'dark';
-    btcPrice: number;
+    btcPrice: number; // Legacy prop name - represents USD value (1 for stablecoins)
 }
 
 interface Transaction {
@@ -63,15 +63,15 @@ export function FASBDashboard({ isOpen, onClose, theme, btcPrice }: FASBDashboar
     };
 
     // Read jUSDi balance using network-aware address
-    const { data: jbtciBalance } = useReadContract({
+    const { data: jusdiBalance } = useReadContract({
         address: strategyAddress as `0x${string}`,
         abi: STRATEGY_ABI,
         functionName: 'balanceOf',
         args: address ? [address] : undefined,
     });
 
-    const balanceNum = jbtciBalance ? Number(formatUnits(jbtciBalance, 8)) : 0;
-    const fairValue = balanceNum * btcPrice;
+    const balanceNum = jusdiBalance ? Number(formatUnits(jusdiBalance, 6)) : 0; // USDC uses 6 decimals
+    const fairValue = balanceNum * 1; // 1 USDC = $1
 
     // Calculate period dates
     const getPeriodDates = (p: Period): { start: Date; end: Date } => {
@@ -114,7 +114,7 @@ export function FASBDashboard({ isOpen, onClose, theme, btcPrice }: FASBDashboar
                         type: tx.to.toLowerCase() === address.toLowerCase() ? 'Deposit' : 'Withdraw',
                         amount: formatUnits(BigInt(tx.value), 8),
                         costBasis: 0, // Would need historical price
-                        fairValue: Number(formatUnits(BigInt(tx.value), 8)) * btcPrice,
+                        fairValue: Number(formatUnits(BigInt(tx.value), 6)) * 1, // 1 USDC = $1
                         hash: tx.hash,
                     }));
                     setTransactions(txs);

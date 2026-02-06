@@ -47,7 +47,7 @@ export function OnrampModal({ isOpen, onClose, theme, btcPrice }: OnrampModalPro
         // Build Coinbase Onramp URL with parameters per docs:
         // https://docs.cdp.coinbase.com/onramp-&-offramp/onramp-apis/generating-onramp-url
         const params = new URLSearchParams({
-            appId: 'jbtci',
+            appId: 'jusdi',
             defaultAsset: 'CBUSD',
             defaultNetwork: 'base',
             presetFiatAmount: amount || '100',

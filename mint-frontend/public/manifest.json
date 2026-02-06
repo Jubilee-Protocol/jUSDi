@@ -1,7 +1,7 @@
 {
-    "name": "jBTCi",
-    "short_name": "jBTCi",
-    "description": "The Bitcoin Index Fund - deposit cbBTC for diversified BTC exposure with 6-10% APY",
+    "name": "jUSDi",
+    "short_name": "jUSDi",
+    "description": "The USD Index Fund - deposit USDC for diversified stablecoin exposure with 6-10% APY",
     "iconPath": "./jubilee-logo-pink.png",
     "icons": [
         {

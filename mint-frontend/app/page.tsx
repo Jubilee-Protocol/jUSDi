@@ -124,6 +124,9 @@ const ERC20_ABI = [
 // Theme types
 type Theme = 'light' | 'dark';
 
+// USDC uses 6 decimals on Base mainnet
+const USDC_DECIMALS = 6;
+
 // Get gradient style based on theme
 const getGradientStyle = (theme: Theme) => ({
     background: theme === 'light'
@@ -243,7 +246,7 @@ export default function Home() {
     const [hasAcceptedTerms, setHasAcceptedTerms] = useState(false);
     const [showTermsModal, setShowTermsModal] = useState(true);
     const [rememberDevice, setRememberDevice] = useState(false);
-    const [btcPrice, setBtcPrice] = useState(91000);
+    const [usdPrice] = useState(1); // USDC/USDT are stablecoins, always $1
     const [toast, setToast] = useState<{ message: string; type: 'success' | 'error' | 'pending' } | null>(null);
     const [theme, setTheme] = useState<Theme>('light');
     const [showHistory, setShowHistory] = useState(false);
@@ -330,7 +333,7 @@ export default function Home() {
 
     // Load theme from localStorage
     useEffect(() => {
-        const savedTheme = localStorage.getItem('jbtci-theme') as Theme | null;
+        const savedTheme = localStorage.getItem('jusdi-theme') as Theme | null;
         if (savedTheme) {
             setTheme(savedTheme);
         } else if (window.matchMedia('(prefers-color-scheme: dark)').matches) {
@@ -342,13 +345,13 @@ export default function Home() {
     const toggleTheme = useCallback(() => {
         const newTheme = theme === 'light' ? 'dark' : 'light';
         setTheme(newTheme);
-        localStorage.setItem('jbtci-theme', newTheme);
+        localStorage.setItem('jusdi-theme', newTheme);
     }, [theme]);
 
     // Load transaction history from localStorage
     useEffect(() => {
         if (address) {
-            const saved = localStorage.getItem(`jbtci-history-${address}`);
+            const saved = localStorage.getItem(`jusdi-history-${address}`);
             if (saved) {
                 setTxHistory(JSON.parse(saved));
             }
@@ -361,30 +364,15 @@ export default function Home() {
         const newTx: TxHistoryItem = { type, amount, timestamp: Date.now(), hash };
         const updated = [newTx, ...txHistory].slice(0, 20); // Keep last 20
         setTxHistory(updated);
-        localStorage.setItem(`jbtci-history-${address}`, JSON.stringify(updated));
+        localStorage.setItem(`jusdi-history-${address}`, JSON.stringify(updated));
     }, [address, txHistory]);
 
-    // Fetch live USD price from CoinGecko
-    useEffect(() => {
-        const fetchPrice = async () => {
-            try {
-                const res = await fetch('https://api.coingecko.com/api/v3/simple/price?ids=bitcoin&vs_currencies=usd');
-                const data = await res.json();
-                if (data?.bitcoin?.usd) {
-                    setBtcPrice(data.bitcoin.usd);
-                }
-            } catch (err) {
-                console.log('Price fetch failed, using fallback');
-            }
-        };
-        fetchPrice();
-        const interval = setInterval(fetchPrice, 60000);
-        return () => clearInterval(interval);
-    }, []);
+    // No price fetch needed - USDC/USDT are stablecoins ($1)
+    const btcPrice = 1; // For component prop compatibility
 
     // Check localStorage for remembered terms acceptance
     useEffect(() => {
-        const remembered = localStorage.getItem('jbtci-terms-remembered');
+        const remembered = localStorage.getItem('jusdi-terms-remembered');
         if (remembered === 'true') {
             setHasAcceptedTerms(true);
             setShowTermsModal(false);
@@ -482,7 +470,7 @@ export default function Home() {
 
     const handleAcceptTerms = () => {
         if (rememberDevice) {
-            localStorage.setItem('jbtci-terms-remembered', 'true');
+            localStorage.setItem('jusdi-terms-remembered', 'true');
         }
         setHasAcceptedTerms(true);
         setShowTermsModal(false);
@@ -539,13 +527,13 @@ export default function Home() {
         args: [BigInt(1e8)], // 1 jUSDi in wei (8 decimals)
     });
 
-    const shareRatioDisplay = shareRatio ? (Number(formatUnits(shareRatio, 8))).toFixed(6) : '1.000000';
+    const shareRatioDisplay = shareRatio ? (Number(formatUnits(shareRatio, USDC_DECIMALS))).toFixed(6) : '1.000000';
 
-    // Allocation percentages from strategy (bug fixed in new testnet deployment Jan 15 2026)
-    const wbtcPercent = strategyStatus ? Number(strategyStatus.wbtcAlloc) / 100 : 50;
-    const cbbtcPercent = strategyStatus ? Number(strategyStatus.cbbtcAlloc) / 100 : 50;
-    const totalHoldings = strategyStatus ? Number(formatUnits(strategyStatus.totalHoldings, 8)) : 0;
-    const depositUsdValue = (parseFloat(depositAmount || '0') * btcPrice);
+    // Allocation percentages - for jUSDi these represent USDC/USDT split
+    const usdtPercent = strategyStatus ? Number(strategyStatus.wbtcAlloc) / 100 : 50;
+    const usdcPercent = strategyStatus ? Number(strategyStatus.cbbtcAlloc) / 100 : 50;
+    const totalHoldings = strategyStatus ? Number(formatUnits(strategyStatus.totalHoldings, USDC_DECIMALS)) : 0;
+    const depositUsdValue = parseFloat(depositAmount || '0'); // 1 USDC = $1
 
     // Handle deposit
     const handleDeposit = async () => {
@@ -1084,8 +1072,8 @@ export default function Home() {
                                         <span>
                                             Balance: <span style={{ color: c.text, fontWeight: '500' }}>
                                                 {activeTab === 'deposit'
-                                                    ? (USDCBalance ? parseFloat(formatUnits(USDCBalance, 8)).toFixed(4) : '0.00')
-                                                    : (jUSDiBalance ? parseFloat(formatUnits(jUSDiBalance, 8)).toFixed(4) : '0.00')
+                                                    ? (USDCBalance ? parseFloat(formatUnits(USDCBalance, USDC_DECIMALS)).toFixed(4) : '0.00')
+                                                    : (jUSDiBalance ? parseFloat(formatUnits(jUSDiBalance, USDC_DECIMALS)).toFixed(4) : '0.00')
                                                 }
                                             </span>
                                         </span>
@@ -1111,7 +1099,7 @@ export default function Home() {
                                             <button
                                                 onClick={() => {
                                                     const balance = activeTab === 'deposit' ? USDCBalance : jUSDiBalance;
-                                                    setDepositAmount(balance ? formatUnits(balance, 8) : '0');
+                                                    setDepositAmount(balance ? formatUnits(balance, USDC_DECIMALS) : '0');
                                                 }}
                                                 style={{ color: '#0052FF', fontSize: '14px', fontWeight: '500', background: 'none', border: 'none', cursor: 'pointer' }}
                                             >
@@ -1186,7 +1174,7 @@ export default function Home() {
 
                                 {/* Min deposit + Get USDC hint */}
                                 <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '12px', color: c.textLight, padding: '0 8px' }}>
-                                    <span>Min. deposit: {MIN_DEPOSIT_USD} USD ≈ ${(MIN_DEPOSIT_USD * btcPrice).toLocaleString()}</span>
+                                    <span>Min. deposit: ${MIN_DEPOSIT_USD} USDC</span>
                                     <button
                                         onClick={() => setShowOnramp(true)}
                                         style={{
@@ -1320,14 +1308,10 @@ export default function Home() {
                                 <div style={{ fontSize: '14px', fontWeight: '600', color: c.text }}>
                                     {isLoadingStatus ? <Skeleton width="50px" /> : (
                                         showTvlInUsd
-                                            ? `$${(totalHoldings * btcPrice).toLocaleString(undefined, { maximumFractionDigits: 0 })}`
+                                            ? `$${totalHoldings.toLocaleString(undefined, { maximumFractionDigits: 2 })}`
                                             : `${totalHoldings.toFixed(4)} USD`
                                     )}
                                 </div>
-                            </div>
-                            <div style={{ background: c.card, borderRadius: '12px', padding: '12px', textAlign: 'center', boxShadow: '0 1px 3px rgba(0,0,0,0.1)', border: `1px solid ${c.cardBorder}` }}>
-                                <div style={{ fontSize: '10px', color: c.textLight, textTransform: 'uppercase', marginBottom: '4px' }}>Deposit Cap</div>
-                                <div style={{ fontSize: '14px', fontWeight: '600', color: '#22C55E' }}>{depositCap} USD</div>
                             </div>
                             <div style={{ background: c.card, borderRadius: '12px', padding: '12px', textAlign: 'center', boxShadow: '0 1px 3px rgba(0,0,0,0.1)', border: `1px solid ${c.cardBorder}` }}>
                                 <div style={{ fontSize: '10px', color: c.textLight, textTransform: 'uppercase', marginBottom: '4px' }}>APY</div>
@@ -1336,13 +1320,13 @@ export default function Home() {
                             <div style={{ background: c.card, borderRadius: '12px', padding: '12px', textAlign: 'center', boxShadow: '0 1px 3px rgba(0,0,0,0.1)', border: `1px solid ${c.cardBorder}` }}>
                                 <div style={{ fontSize: '10px', color: c.textLight, textTransform: 'uppercase', marginBottom: '4px' }}>USDT</div>
                                 <div style={{ fontSize: '14px', fontWeight: '600', color: '#FFA500' }}>
-                                    {isLoadingStatus ? <Skeleton width="40px" /> : `${wbtcPercent.toFixed(0)}%`}
+                                    {isLoadingStatus ? <Skeleton width="40px" /> : `${usdtPercent.toFixed(0)}%`}
                                 </div>
                             </div>
                             <div style={{ background: c.card, borderRadius: '12px', padding: '12px', textAlign: 'center', boxShadow: '0 1px 3px rgba(0,0,0,0.1)', border: `1px solid ${c.cardBorder}` }}>
                                 <div style={{ fontSize: '10px', color: c.textLight, textTransform: 'uppercase', marginBottom: '4px' }}>USDC</div>
                                 <div style={{ fontSize: '14px', fontWeight: '600', color: '#0052FF' }}>
-                                    {isLoadingStatus ? <Skeleton width="40px" /> : `${cbbtcPercent.toFixed(0)}%`}
+                                    {isLoadingStatus ? <Skeleton width="40px" /> : `${usdcPercent.toFixed(0)}%`}
                                 </div>
                             </div>
                         </div>
@@ -1351,10 +1335,10 @@ export default function Home() {
                         {isConnected && (
                             <div style={{ display: 'flex', justifyContent: 'center', gap: '24px', marginTop: '16px', fontSize: '13px', color: c.textMuted }}>
                                 <span>
-                                    Your USDC: <strong style={{ color: '#0052FF' }}>{USDCBalance ? parseFloat(formatUnits(USDCBalance, 8)).toFixed(4) : '0'}</strong>
+                                    Your USDC: <strong style={{ color: '#0052FF' }}>{USDCBalance ? parseFloat(formatUnits(USDCBalance, USDC_DECIMALS)).toFixed(4) : '0'}</strong>
                                 </span>
                                 <span>
-                                    Your jUSDi: <strong style={{ color: '#FFA500' }}>{jUSDiBalance ? parseFloat(formatUnits(jUSDiBalance, 8)).toFixed(4) : '0'}</strong>
+                                    Your jUSDi: <strong style={{ color: '#FFA500' }}>{jUSDiBalance ? parseFloat(formatUnits(jUSDiBalance, USDC_DECIMALS)).toFixed(4) : '0'}</strong>
                                 </span>
                             </div>
                         )}
@@ -1364,16 +1348,16 @@ export default function Home() {
                             <span style={{ color: isMaintenanceMode ? '#F59E0B' : (strategyStatus?.isPaused ? '#EF4444' : '#22C55E') }}>
                                 ● {isMaintenanceMode ? 'Maintenance' : (strategyStatus?.isPaused ? 'Paused' : 'Active')}
                             </span>
-                            <a href="https://basescan.org/address/0x8a4C0254258F0D3dB7Bc5C5A43825Bb4EfC81337" target="_blank" rel="noopener noreferrer" style={{ color: c.textLight }}>
+                            <a href="https://basescan.org/address/0x0B03463259d5041004290822444c4183aE936050" target="_blank" rel="noopener noreferrer" style={{ color: c.textLight }}>
                                 Contract ↗
                             </a>
-                            <a href="https://github.com/Jubilee-Protocol/jUSDi-on-Base/blob/main/docs/AUDIT_REPORT.md" target="_blank" rel="noopener noreferrer" style={{ color: c.textLight }}>
+                            <a href="https://github.com/Jubilee-Protocol/jUSDi/blob/main/docs/RED_TEAM_EVM_AUDIT.md" target="_blank" rel="noopener noreferrer" style={{ color: c.textLight }}>
                                 Audit ↗
                             </a>
-                            <a href="https://github.com/Jubilee-Protocol/jUSDi-on-Base/blob/main/docs/FAQ.md" target="_blank" rel="noopener noreferrer" style={{ color: c.textLight }}>
+                            <a href="https://github.com/Jubilee-Protocol/jUSDi/blob/main/docs/FAQ.md" target="_blank" rel="noopener noreferrer" style={{ color: c.textLight }}>
                                 FAQ ↗
                             </a>
-                            <a href="https://github.com/Jubilee-Protocol/jUSDi-on-Base#readme" target="_blank" rel="noopener noreferrer" style={{ color: c.textLight }}>
+                            <a href="https://github.com/Jubilee-Protocol/jUSDi#readme" target="_blank" rel="noopener noreferrer" style={{ color: c.textLight }}>
                                 Learn More ↗
                             </a>
                             <button

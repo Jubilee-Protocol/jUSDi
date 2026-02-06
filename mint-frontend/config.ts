@@ -26,6 +26,7 @@ const connectors = connectorsForWallets(
 )
 
 // Create config with Safe connector + Farcaster + RainbowKit wallets
+// Default chain is Base Mainnet
 export const config = createConfig({
     chains: [base, baseSepolia],
     connectors: [
@@ -47,6 +48,7 @@ export const CONTRACTS = {
     // Base Mainnet - jUSDi (USDC + USDT Index) - DEPLOYED Feb 6 2026
     mainnet: {
         vault: '0x0B03463259d5041004290822444c4183aE936050',    // JUSDiVault (ERC4626)
+        strategy: '0x0B03463259d5041004290822444c4183aE936050', // Alias for vault (for UI compatibility)
         adapter: '0x15f0Eb7f49E3d35B37F9B606b966a684Ce7ebc03', // LendingRouterAdapter
         lendingRouter: '0x6533715ccd0fdDe359baB156080DD38D5C85FfF9', // LendingRouter
         jusdiToken: '0x04cC650F6dB0B91Ef910a4a54F22232771988432', // jUSDi OFT Token
@@ -65,3 +67,7 @@ export const CONTRACTS = {
         USDT: '0x5ed96C75f5F04A94308623A8828B819E7Ef60B1c',     // Mock USDT for testnet
     }
 }
+
+// Default to mainnet
+export const DEFAULT_CHAIN = base;
+

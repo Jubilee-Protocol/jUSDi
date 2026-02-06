@@ -11,7 +11,7 @@ interface TutorialModalProps {
 
 type TutorialStep = 1 | 2 | 3 | 4;
 
-const TUTORIAL_VERSION = 'jbtci_tutorial_v1';
+const TUTORIAL_VERSION = 'jusdi_tutorial_v1';
 
 export function useTutorial() {
     const [showTutorial, setShowTutorial] = useState(false);
@@ -48,7 +48,7 @@ export function useTutorial() {
 
 export function TutorialModal({ isOpen, onClose, theme, btcPrice }: TutorialModalProps) {
     const [step, setStep] = useState<TutorialStep>(1);
-    const minDepositUSD = (0.01 * btcPrice).toLocaleString('en-US', { style: 'currency', currency: 'USD', maximumFractionDigits: 0 });
+    const minDepositUSD = '$0.01'; // Stablecoins are $1
 
     const c = theme === 'dark' ? {
         bg: 'rgba(20, 20, 35, 0.98)',
@@ -231,10 +231,10 @@ export function TutorialModal({ isOpen, onClose, theme, btcPrice }: TutorialModa
                                 padding: '16px',
                             }}>
                                 <p style={{ margin: 0, color: theme === 'dark' ? '#FCD34D' : '#92400E', fontSize: '14px' }}>
-                                    <strong>Minimum deposit:</strong> 0.01 USD ({minDepositUSD})
+                                    <strong>Minimum deposit:</strong> 0.01 USDC ({minDepositUSD})
                                 </p>
                                 <p style={{ margin: '8px 0 0', fontSize: '11px', color: theme === 'dark' ? '#a0a0b0' : '#78716c' }}>
-                                    Price by <a href="https://www.coingecko.com/" target="_blank" rel="noopener noreferrer" style={{ color: 'inherit', textDecoration: 'underline' }}>CoinGecko</a>
+                                    USDC is a stablecoin pegged to US dollars
                                 </p>
                             </div>
                         </div>

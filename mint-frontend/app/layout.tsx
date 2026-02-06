@@ -14,11 +14,11 @@ export const metadata: Metadata = {
     openGraph: {
         title: 'jUSDi | Stablecoin Index on Base',
         description: 'The Jubilee USD Index on Base. Earn 8-12% APY on diversified stablecoin exposure.',
-        url: 'https://mint.jusdi.xyz',
+        url: 'https://base.jusdi.xyz',
         siteName: 'jUSDi',
         images: [
             {
-                url: 'https://mint.jusdi.xyz/og-image.png',
+                url: 'https://base.jusdi.xyz/og-image.png',
                 width: 625,
                 height: 625,
                 alt: 'jUSDi - Stablecoin Index',
@@ -31,20 +31,20 @@ export const metadata: Metadata = {
         card: 'summary_large_image',
         title: 'jUSDi | Stablecoin Index on Base',
         description: 'The Jubilee USD Index on Base. Earn 8-12% APY on diversified stablecoin exposure.',
-        images: ['https://mint.jusdi.xyz/og-image.png'],
+        images: ['https://base.jusdi.xyz/og-image.png'],
     },
     other: {
         'base:app_id': '6960e2c68a6eeb04b568d951',
         'fc:miniapp': JSON.stringify({
             version: 'next',
-            imageUrl: 'https://mint.jusdi.xyz/og-image.png',
+            imageUrl: 'https://base.jusdi.xyz/og-image.png',
             button: {
                 title: 'Open jUSDi',
                 action: {
                     type: 'launch_frame',
-                    url: 'https://mint.jusdi.xyz',
+                    url: 'https://base.jusdi.xyz',
                     name: 'jUSDi - Stablecoin Index',
-                    splashImageUrl: 'https://mint.jusdi.xyz/splash.png',
+                    splashImageUrl: 'https://base.jusdi.xyz/splash.png',
                     splashBackgroundColor: '#0a0a0a'
                 }
             }

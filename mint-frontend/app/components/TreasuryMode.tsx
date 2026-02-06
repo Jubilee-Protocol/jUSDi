@@ -206,7 +206,7 @@ export function TreasuryMode({ isOpen, onClose, theme }: TreasuryModeProps) {
                                 <Step num={2} text="Select your Safe on Base" theme={theme} />
                                 <Step num={3} text="Click 'Apps' in left sidebar" theme={theme} />
                                 <Step num={4} text="Click 'My custom apps' tab" theme={theme} />
-                                <Step num={5} text="Add: https://mint.jbtci.xyz" theme={theme} />
+                                <Step num={5} text="Add: https://base.jusdi.xyz" theme={theme} />
                             </div>
 
                             <div style={{
