@@ -89,7 +89,7 @@ Treasury Mode allows organizations (churches, nonprofits, DAOs) to use jUSDi wit
 2. Select Base as your network
 3. Add signers (e.g., Pastor, Treasurer, Deacon)
 4. Set approval threshold (e.g., 2 of 3)
-5. Add jUSDi as a custom app in Safe
+5. Add https://base.jUSDi.xyz as a custom app in Safe
 
 ---
 
