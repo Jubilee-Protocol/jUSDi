@@ -6,13 +6,13 @@
 ![Base](https://img.shields.io/badge/Base-Mainnet-green)
 ![Solana](https://img.shields.io/badge/Solana-Devnet-purple)
 
-**jUSDi** is a diversified stablecoin index vault that manages exposure across **USDC and USDT** — the two stablecoins with the deepest liquidity — with automated risk-based rebalancing and yield optimization. Earn **12-15% target APY** while maintaining maximum stablecoin safety.
+**jUSDi** is a diversified stablecoin index vault that manages exposure across **USDC and USDT** — the two stablecoins with the deepest liquidity — with automated risk-based rebalancing and yield optimization. Earn **3% - 6%% target APY** while maintaining maximum stablecoin safety.
 
 **🟢 Live on Base Mainnet** • Testnets: Base Sepolia • Ethereum Sepolia • Solana Devnet
 
 ---
 
-## 🦞 Agentic Infrastructure: The Immortal Agent
+## 🦞 Agentic Infrastructure
 
 > **"Spend the harvest, keep the seed."**
 
