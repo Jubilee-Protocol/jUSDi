@@ -76,6 +76,17 @@ const STRATEGY_ABI = [
         outputs: [{ name: 'assets', type: 'uint256' }]
     },
     {
+        name: 'withdraw',
+        type: 'function',
+        stateMutability: 'nonpayable',
+        inputs: [
+            { name: 'assets', type: 'uint256' },
+            { name: 'receiver', type: 'address' },
+            { name: 'owner', type: 'address' }
+        ],
+        outputs: [{ name: 'shares', type: 'uint256' }]
+    },
+    {
         name: 'convertToAssets',
         type: 'function',
         stateMutability: 'view',
@@ -560,7 +571,8 @@ export default function Home() {
         address: strategyAddress,
         abi: STRATEGY_ABI,
         functionName: 'convertToAssets',
-        args: [BigInt(1e6)], // 1 jUSDi in wei (6 decimals for USDC)
+        functionName: 'convertToAssets',
+        args: [BigInt(1e18)], // 1 jUSDi in wei (18 decimals)
     });
 
     const shareRatioDisplay = shareRatio ? (Number(formatUnits(shareRatio, USDC_DECIMALS))).toFixed(6) : '1.000000';
@@ -610,13 +622,15 @@ export default function Home() {
         if (!address || !depositAmount) return;
 
         try {
-            const sharesWei = parseUnits(depositAmount, JUSDI_DECIMALS);
+            // Use withdraw(assets) instead of redeem(shares) to ensure liquidity is pulled from router
+            // Treating input as USDC amount (1:1 with jUSDi)
+            const assetsWei = parseUnits(depositAmount, USDC_DECIMALS);
             setToast({ message: 'Withdrawing USDC...', type: 'pending' });
             redeemShares({
                 address: strategyAddress,
                 abi: STRATEGY_ABI,
-                functionName: 'redeem',
-                args: [sharesWei, address, address],
+                functionName: 'withdraw',
+                args: [assetsWei, address, address],
             } as any);
         } catch (error: unknown) {
             const errorMessage = error instanceof Error ? error.message : 'Transaction failed';
