@@ -610,7 +610,7 @@ export default function Home() {
         if (!address || !depositAmount) return;
 
         try {
-            const sharesWei = parseUnits(depositAmount, USDC_DECIMALS);
+            const sharesWei = parseUnits(depositAmount, JUSDI_DECIMALS);
             setToast({ message: 'Withdrawing USDC...', type: 'pending' });
             redeemShares({
                 address: strategyAddress,
@@ -1080,7 +1080,7 @@ export default function Home() {
                                             <button
                                                 onClick={() => {
                                                     const balance = activeTab === 'deposit' ? USDCBalance : jUSDiBalance;
-                                                    setDepositAmount(balance ? formatUnits(balance, USDC_DECIMALS) : '0');
+                                                    setDepositAmount(balance ? formatUnits(balance, activeTab === 'deposit' ? USDC_DECIMALS : JUSDI_DECIMALS) : '0');
                                                 }}
                                                 style={{ color: '#0052FF', fontSize: '14px', fontWeight: '500', background: 'none', border: 'none', cursor: 'pointer' }}
                                             >
