@@ -25,7 +25,7 @@ jUSDi maintains a risk-weighted allocation across USDC and USDT, automatically r
 - **💰 Yield Optimization**: Aave V3 (EVM) and Kamino (Solana) integration
 - **🔒 Depeg Protection**: Circuit breakers trigger "flight to quality" on price deviation
 - **📊 ERC4626 Compliant**: Standard vault interface for easy integration
-- **🌐 Multi-Chain**: Live on Base Sepolia, Ethereum Sepolia, and Solana Devnet
+- **🌐 Multi-Chain**: Live on Base Mainnet, Ethereum Sepolia, and Solana Devnet
 
 ---
 
