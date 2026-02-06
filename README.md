@@ -36,7 +36,6 @@ Autonomous agents have **burn rates** — API credits, RPC access, hosting, gas 
 |-----------|-------|------|
 | 🟣 **Solana Agent Hackathon** | Colosseum | [View Submission](https://colosseum.com/agent-hackathon/projects/jubilee-yield-stream) |
 | 💵 **Moltbook USDC Hackathon** | Agentic Commerce | [View Submission](https://www.moltbook.com/post/a30c6401-ed6d-42ed-8f06-efff66c1fb46) |
-| 🔵 **Base Hackathon** | Agent Infrastructure | *Coming Soon* |
 
 ### Deployed Yield Stream Contracts
 
@@ -231,11 +230,10 @@ anchor deploy --provider.cluster mainnet
 - Added oracle price guards with 3% slippage floor
 
 **Deployments**
-- ✅ Base Sepolia: Vault + Strategy deployed
+- ✅ Base Mainnet: Vault + Strategy deployed
 - ✅ Ethereum Sepolia: Vault + Strategy deployed
 - ✅ Solana Devnet: Program deployed
 - ⏳ Ethereum Mainnet: Coming Soon
-- ⏳ Base Mainnet: Coming Soon
 - ⏳ Solana Mainnet: Coming Soon
 
 **Infrastructure**
@@ -249,7 +247,7 @@ anchor deploy --provider.cluster mainnet
 
 **[Jubilee Labs](https://jubileelabs.xyz)** — Building the Liberty Layer
 
-Governed by **[Hundredfold Foundation](https://twitter.com/GoHundredfold)**
+Governed by Hundredfold Foundation
 
 ---
 
