@@ -3,12 +3,12 @@
 ![Jubilee Protocol](https://img.shields.io/badge/Jubilee-Protocol-pink)
 ![License](https://img.shields.io/badge/license-MIT-blue)
 ![Ethereum](https://img.shields.io/badge/Ethereum-Sepolia-blue)
-![Base](https://img.shields.io/badge/Base-Testnet-blue)
+![Base](https://img.shields.io/badge/Base-Mainnet-green)
 ![Solana](https://img.shields.io/badge/Solana-Devnet-purple)
 
 **jUSDi** is a diversified stablecoin index vault that manages exposure across **USDC and USDT** — the two stablecoins with the deepest liquidity — with automated risk-based rebalancing and yield optimization. Earn **12-15% target APY** while maintaining maximum stablecoin safety.
 
-**Live on testnets**: Base Sepolia • Ethereum Sepolia • Solana Devnet
+**🟢 Live on Base Mainnet** • Testnets: Base Sepolia • Ethereum Sepolia • Solana Devnet
 
 ---
 
