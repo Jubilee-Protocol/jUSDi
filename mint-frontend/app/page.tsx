@@ -565,9 +565,9 @@ export default function Home() {
 
     const shareRatioDisplay = shareRatio ? (Number(formatUnits(shareRatio, USDC_DECIMALS))).toFixed(6) : '1.000000';
 
-    // Allocation percentages - for jUSDi these represent USDC/USDT split (hardcoded for now)
-    const usdtPercent = 50;
-    const usdcPercent = 50;
+    // Allocation percentages - for jUSDi these represent USDC/USDT split (100% USDC for V3 launch)
+    const usdtPercent = 0;
+    const usdcPercent = 100;
     // TVL from V3 totalAssets()
     const totalHoldings = totalAssetsRaw ? Number(formatUnits(totalAssetsRaw, USDC_DECIMALS)) : 0;
     const depositUsdValue = parseFloat(depositAmount || '0'); // 1 USDC = $1
