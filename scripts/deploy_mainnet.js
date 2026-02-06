@@ -1,119 +1,74 @@
 /**
- * jUSDi Mainnet Deployment Script
+ * jUSDi Mainnet Deployment Script (Resume from Step 4)
  * 
- * Deploys the full jUSDi stack to Base Mainnet:
- * 1. LendingRouter (Aave V3 integration)
- * 2. LendingRouterAdapter (strategy interface)
- * 3. JUSDiVault (ERC4626 vault)
- * 
- * SECURITY: Requires PRIVATE_KEY in .env
+ * Already deployed:
+ * - LendingRouter:     0x6533715ccd0fdDe359baB156080DD38D5C85FfF9
+ * - StablecoinOracle:  0x081433E5DbfAeBffBdDc1F69B9AB372D7A00fA7a
+ * - RiskScoring:       0x79Bc0A789FC14919ee1698D115624600658efc4e
+ * - EmergencyManager:  0x2B271251D0215753C3bcF56383Fd6D07765a6d90
  */
 
 const hre = require("hardhat");
 
 async function main() {
-    console.log("🚀 jUSDi Mainnet Deployment");
-    console.log("===========================\n");
+    console.log("🚀 jUSDi Mainnet Deployment (Resume from Step 4)");
+    console.log("=================================================\n");
 
     const [deployer] = await hre.ethers.getSigners();
     console.log("Deployer:", deployer.address);
     const balance = await hre.ethers.provider.getBalance(deployer.address);
     console.log("Balance:", hre.ethers.formatEther(balance), "ETH\n");
 
-    // ========== BASE MAINNET CONFIGURATION ==========
+    // ========== CONFIGURATION ==========
     const USDC = hre.ethers.getAddress("0x833589fCD6eDb6E08f4c7C32D4f71b54bdA02913");
-    const USDT = hre.ethers.getAddress("0xfde4C96c8593536E31F229EA8f37b2ADa2699bb2");
-    const AAVE_POOL = hre.ethers.getAddress("0xA238Dd80C259a72e81d7e4664a9801593F98d1c5");
+    const TREASURY = deployer.address;
 
-    // Morpho placeholder (use Aave as fallback)
-    const MORPHO_PLACEHOLDER = AAVE_POOL;
+    // Already deployed contracts
+    const LENDING_ROUTER = "0x6533715ccd0fdDe359baB156080DD38D5C85FfF9";
+    const ORACLE = "0x081433E5DbfAeBffBdDc1F69B9AB372D7A00fA7a";
+    const RISK_SCORING = "0x79Bc0A789FC14919ee1698D115624600658efc4e";
+    const EMERGENCY_MANAGER = "0x2B271251D0215753C3bcF56383Fd6D07765a6d90";
 
-    // Treasury for fee collection
-    const TREASURY = deployer.address; // Change to your actual treasury
+    // LayerZero V2 Endpoint on Base Mainnet
+    const LZ_ENDPOINT = "0x1a44076050125825900e736c501f859c50fE728c";
 
-    // ========== STEP 1: Deploy LendingRouter ==========
-    console.log("Step 1: Deploying LendingRouter...");
-    const LendingRouter = await hre.ethers.getContractFactory(
-        "contracts/vaults/jUSDi/LendingRouter.sol:LendingRouter"
-    );
-    const lendingRouter = await LendingRouter.deploy(
-        deployer.address,
-        AAVE_POOL,
-        MORPHO_PLACEHOLDER
-    );
-    await lendingRouter.waitForDeployment();
-    const lendingRouterAddr = await lendingRouter.getAddress();
-    console.log("✅ LendingRouter:", lendingRouterAddr);
-
-    console.log("   Waiting for confirmation...");
-    await new Promise(r => setTimeout(r, 10000));
-
-    // ========== STEP 2: Deploy JUSDiVault ==========
-    console.log("\nStep 2: Deploying JUSDiVault...");
-
-    // Deploy supporting contracts first (mocks for now, replace with real addresses)
-    // For mainnet, you may want to deploy these separately or use existing addresses
-
-    const EmergencyManager = await hre.ethers.getContractFactory("EmergencyManager");
-    const emergencyManager = await EmergencyManager.deploy();
-    await emergencyManager.waitForDeployment();
-    const emergencyManagerAddr = await emergencyManager.getAddress();
-    console.log("   EmergencyManager:", emergencyManagerAddr);
-
-    await new Promise(r => setTimeout(r, 5000));
-
-    const StablecoinOracle = await hre.ethers.getContractFactory(
-        "contracts/vaults/jUSDi/StablecoinOracle.sol:StablecoinOracle"
-    );
-    const oracle = await StablecoinOracle.deploy();
-    await oracle.waitForDeployment();
-    const oracleAddr = await oracle.getAddress();
-    console.log("   StablecoinOracle:", oracleAddr);
-
-    await new Promise(r => setTimeout(r, 5000));
-
-    const RiskScoring = await hre.ethers.getContractFactory(
-        "contracts/vaults/jUSDi/RiskScoring.sol:RiskScoring"
-    );
-    const riskScoring = await RiskScoring.deploy();
-    await riskScoring.waitForDeployment();
-    const riskScoringAddr = await riskScoring.getAddress();
-    console.log("   RiskScoring:", riskScoringAddr);
-
-    await new Promise(r => setTimeout(r, 5000));
-
-    // Deploy JUSDi token
+    // ========== STEP 4: Deploy JUSDi Token ==========
+    console.log("Step 4: Deploying JUSDi Token (OFT)...");
     const JUSDi = await hre.ethers.getContractFactory("JUSDi");
-    const jusdiToken = await JUSDi.deploy();
+    const jusdiToken = await JUSDi.deploy(LZ_ENDPOINT, deployer.address);
     await jusdiToken.waitForDeployment();
     const jusdiTokenAddr = await jusdiToken.getAddress();
-    console.log("   JUSDi Token:", jusdiTokenAddr);
+    console.log("✅ JUSDi Token:", jusdiTokenAddr);
 
-    await new Promise(r => setTimeout(r, 5000));
+    await new Promise(r => setTimeout(r, 8000));
 
-    // Deploy vault
+    // ========== STEP 5: Deploy JUSDiVault ==========
+    console.log("\nStep 5: Deploying JUSDiVault...");
     const JUSDiVault = await hre.ethers.getContractFactory(
         "contracts/vaults/jUSDi/JUSDiVault.sol:JUSDiVault"
     );
     const vault = await JUSDiVault.deploy(
-        USDC,                    // Base asset
-        jusdiTokenAddr,          // JUSDi token
-        riskScoringAddr,         // Risk scoring
-        emergencyManagerAddr,    // Emergency manager
-        oracleAddr              // Oracle
+        USDC,                    // _baseAsset
+        jusdiTokenAddr,          // _jusdiToken
+        deployer.address,        // _owner
+        RISK_SCORING,            // _riskScoring
+        EMERGENCY_MANAGER,       // _emergencyManager
+        ORACLE,                  // _oracle
+        hre.ethers.ZeroAddress,  // _rebalancingEngine
+        LENDING_ROUTER           // _lendingRouter
     );
     await vault.waitForDeployment();
     const vaultAddr = await vault.getAddress();
     console.log("✅ JUSDiVault:", vaultAddr);
 
-    await new Promise(r => setTimeout(r, 10000));
+    await new Promise(r => setTimeout(r, 8000));
 
-    // ========== STEP 3: Deploy LendingRouterAdapter ==========
-    console.log("\nStep 3: Deploying LendingRouterAdapter...");
+    // ========== STEP 6: Deploy LendingRouterAdapter ==========
+    console.log("\nStep 6: Deploying LendingRouterAdapter...");
     const LendingRouterAdapter = await hre.ethers.getContractFactory("LendingRouterAdapter");
     const adapter = await LendingRouterAdapter.deploy(
         USDC,
-        lendingRouterAddr,
+        LENDING_ROUTER,
         vaultAddr
     );
     await adapter.waitForDeployment();
@@ -122,65 +77,70 @@ async function main() {
 
     await new Promise(r => setTimeout(r, 5000));
 
-    // ========== STEP 4: Configure Ownership ==========
-    console.log("\nStep 4: Configuring ownership and treasury...");
+    // ========== STEP 7: Configure ==========
+    console.log("\nStep 7: Configuring...");
 
     // Transfer LendingRouter ownership to adapter
-    await lendingRouter.transferOwnership(adapterAddr);
-    console.log("   LendingRouter ownership -> Adapter");
-
-    // Set lending router on vault
-    await vault.updateComponents(
-        hre.ethers.ZeroAddress,  // riskScoring (keep current)
-        hre.ethers.ZeroAddress,  // emergencyManager (keep current)
-        hre.ethers.ZeroAddress,  // oracle (keep current)
-        hre.ethers.ZeroAddress,  // rebalancingEngine (keep current)
-        lendingRouterAddr        // lendingRouter
+    const lendingRouter = await hre.ethers.getContractAt(
+        "contracts/vaults/jUSDi/LendingRouter.sol:LendingRouter",
+        LENDING_ROUTER
     );
-    console.log("   Vault lendingRouter set");
+    await lendingRouter.transferOwnership(adapterAddr);
+    console.log("   LendingRouter ownership → Adapter");
 
-    // Set treasury for fee collection
+    // Set treasury
     await vault.setTreasury(TREASURY);
-    console.log("   Treasury set to:", TREASURY);
+    console.log("   Treasury set");
 
     // ========== SUMMARY ==========
-    console.log("\n===========================");
+    console.log("\n=================================================");
     console.log("🎉 jUSDi Mainnet Deployment Complete!");
-    console.log("===========================\n");
+    console.log("=================================================\n");
 
     console.log("Deployed Contracts:");
     console.log("-------------------");
-    console.log(`LendingRouter:        ${lendingRouterAddr}`);
+    console.log(`LendingRouter:        ${LENDING_ROUTER}`);
     console.log(`LendingRouterAdapter: ${adapterAddr}`);
     console.log(`JUSDiVault:           ${vaultAddr}`);
     console.log(`JUSDi Token:          ${jusdiTokenAddr}`);
-    console.log(`EmergencyManager:     ${emergencyManagerAddr}`);
-    console.log(`StablecoinOracle:     ${oracleAddr}`);
-    console.log(`RiskScoring:          ${riskScoringAddr}`);
+    console.log(`StablecoinOracle:     ${ORACLE}`);
+    console.log(`RiskScoring:          ${RISK_SCORING}`);
+    console.log(`EmergencyManager:     ${EMERGENCY_MANAGER}`);
 
     console.log("\nConfiguration:");
     console.log("--------------");
     console.log(`Base Asset (USDC):    ${USDC}`);
-    console.log(`Aave V3 Pool:         ${AAVE_POOL}`);
     console.log(`Treasury:             ${TREASURY}`);
+    console.log(`LZ Endpoint:          ${LZ_ENDPOINT}`);
 
     console.log("\nNext Steps:");
     console.log("-----------");
     console.log("1. Verify all contracts on Basescan");
-    console.log("2. Update frontend config.ts with new addresses");
-    console.log("3. Add MAINNET_VAULT_ADDRESS to GitHub Secrets");
-    console.log("4. Test deposit/withdraw on mainnet");
+    console.log("2. Update frontend config.ts");
+    console.log("3. Test deposit/withdraw");
 
-    // Return addresses for verification script
-    return {
-        lendingRouter: lendingRouterAddr,
-        adapter: adapterAddr,
-        vault: vaultAddr,
-        jusdiToken: jusdiTokenAddr,
-        emergencyManager: emergencyManagerAddr,
-        oracle: oracleAddr,
-        riskScoring: riskScoringAddr
+    // Save deployment info
+    const fs = require('fs');
+    const deployment = {
+        network: "base-mainnet",
+        timestamp: new Date().toISOString(),
+        contracts: {
+            lendingRouter: LENDING_ROUTER,
+            adapter: adapterAddr,
+            vault: vaultAddr,
+            jusdiToken: jusdiTokenAddr,
+            oracle: ORACLE,
+            riskScoring: RISK_SCORING,
+            emergencyManager: EMERGENCY_MANAGER
+        },
+        config: {
+            usdc: USDC,
+            treasury: TREASURY,
+            lzEndpoint: LZ_ENDPOINT
+        }
     };
+    fs.writeFileSync('deployment-mainnet.json', JSON.stringify(deployment, null, 2));
+    console.log("\n✅ Saved deployment info to deployment-mainnet.json");
 }
 
 main()

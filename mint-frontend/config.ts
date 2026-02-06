@@ -44,10 +44,12 @@ export const config = createConfig({
 
 // Contract addresses
 export const CONTRACTS = {
-    // Base Mainnet - jUSDi (USDC + USDT Index)
+    // Base Mainnet - jUSDi (USDC + USDT Index) - DEPLOYED Feb 6 2026
     mainnet: {
-        strategy: '0x0000000000000000000000000000000000000000', // TBD - Deploy JUSDiVault
-        vault: '0x0000000000000000000000000000000000000000',    // Not needed, strategy IS the vault
+        vault: '0x0B03463259d5041004290822444c4183aE936050',    // JUSDiVault (ERC4626)
+        adapter: '0x15f0Eb7f49E3d35B37F9B606b966a684Ce7ebc03', // LendingRouterAdapter
+        lendingRouter: '0x6533715ccd0fdDe359baB156080DD38D5C85FfF9', // LendingRouter
+        jusdiToken: '0x04cC650F6dB0B91Ef910a4a54F22232771988432', // jUSDi OFT Token
         USDC: '0x833589fCD6eDb6E08f4c7C32D4f71b54bdA02913',     // Native USDC on Base
         USDT: '0xfde4C96c8593536E31F229EA8f37b2ADa2699bb2',     // Bridged USDT on Base
         // Aave V3 Yield Pools
