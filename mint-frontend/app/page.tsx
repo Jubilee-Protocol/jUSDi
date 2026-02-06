@@ -1232,29 +1232,12 @@ export default function Home() {
                         </div>
 
                         <div style={{ display: 'grid', gridTemplateColumns: 'repeat(4, 1fr)', gap: '12px', marginTop: '24px' }}>
-                            <div
-                                onClick={() => setShowTvlInUsd(!showTvlInUsd)}
-                                style={{
-                                    background: c.card,
-                                    borderRadius: '12px',
-                                    padding: '12px',
-                                    textAlign: 'center',
-                                    boxShadow: '0 1px 3px rgba(0,0,0,0.1)',
-                                    border: `1px solid ${c.cardBorder}`,
-                                    cursor: 'pointer',
-                                    transition: 'all 0.2s ease'
-                                }}
-                                title="Click to toggle USD/USD"
-                            >
+                            <div style={{ background: c.card, borderRadius: '12px', padding: '12px', textAlign: 'center', boxShadow: '0 1px 3px rgba(0,0,0,0.1)', border: `1px solid ${c.cardBorder}` }}>
                                 <div style={{ fontSize: '10px', color: c.textLight, textTransform: 'uppercase', marginBottom: '4px' }}>
-                                    TVL {showTvlInUsd ? '(USD)' : '(USD)'} ↻
+                                    TVL (USD)
                                 </div>
                                 <div style={{ fontSize: '14px', fontWeight: '600', color: c.text }}>
-                                    {isLoadingStatus ? <Skeleton width="50px" /> : (
-                                        showTvlInUsd
-                                            ? `$${totalHoldings.toLocaleString(undefined, { maximumFractionDigits: 2 })}`
-                                            : `${totalHoldings.toFixed(4)} USD`
-                                    )}
+                                    {isLoadingStatus ? <Skeleton width="50px" /> : `$${totalHoldings.toLocaleString(undefined, { maximumFractionDigits: 2 })}`}
                                 </div>
                             </div>
                             <div style={{ background: c.card, borderRadius: '12px', padding: '12px', textAlign: 'center', boxShadow: '0 1px 3px rgba(0,0,0,0.1)', border: `1px solid ${c.cardBorder}` }}>
