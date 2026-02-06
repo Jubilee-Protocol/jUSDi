@@ -45,3 +45,6 @@ yarn-error.log*
 # Deployment artifacts (keep these locally)
 deployment-*.json
 test-ledger/
+
+# Private strategy documents
+docs/MAINNET_ROLLOUT.md

@@ -6,7 +6,7 @@
 ![Base](https://img.shields.io/badge/Base-Testnet-blue)
 ![Solana](https://img.shields.io/badge/Solana-Devnet-purple)
 
-**jUSDi** is a diversified stablecoin index vault that manages exposure across USDC, USDT, DAI, and USDS with automated risk-based rebalancing and yield optimization. Earn **12-15% target APY** while maintaining maximum stablecoin safety.
+**jUSDi** is a diversified stablecoin index vault that manages exposure across **USDC and USDT** — the two stablecoins with the deepest liquidity — with automated risk-based rebalancing and yield optimization. Earn **12-15% target APY** while maintaining maximum stablecoin safety.
 
 **Live on testnets**: Base Sepolia • Ethereum Sepolia • Solana Devnet
 
@@ -64,7 +64,7 @@ A **Next.js** web application for creating and managing yield streams:
 
 ## Overview
 
-jUSDi maintains a risk-weighted allocation across top stablecoins, automatically rebalancing when any asset's risk score changes or allocation drifts beyond thresholds. The strategy captures yield from Aave V3 (Base) and Kamino (Solana) while protecting against depeg events.
+jUSDi maintains a risk-weighted allocation across USDC and USDT, automatically rebalancing when any asset's risk score changes or allocation drifts beyond thresholds. The strategy captures yield from Aave V3 (Base) and Kamino (Solana) while protecting against depeg events.
 
 ### Key Features
 

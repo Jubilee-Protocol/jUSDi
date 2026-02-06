@@ -1,0 +1,55 @@
+name: jUSDi Keeper - Rebalancing
+
+on:
+  schedule:
+    # Run every 6 hours
+    - cron: '0 */6 * * *'
+  workflow_dispatch:
+    inputs:
+      force_rebalance:
+        description: 'Force rebalance regardless of drift'
+        required: false
+        default: 'false'
+        type: boolean
+
+env:
+  RPC_URL: ${{ secrets.BASE_RPC_URL }}
+
+jobs:
+  check-and-rebalance:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: 'npm'
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Check allocation drift
+        id: check_drift
+        run: |
+          echo "Checking vault allocation drift..."
+          # This script checks if rebalancing is needed
+          node scripts/keeper/check_drift.js
+        env:
+          VAULT_ADDRESS: ${{ secrets.JUSDI_VAULT_ADDRESS }}
+
+      - name: Execute rebalance (if needed)
+        if: steps.check_drift.outputs.needs_rebalance == 'true' || github.event.inputs.force_rebalance == 'true'
+        run: |
+          echo "Executing rebalance..."
+          node scripts/keeper/rebalance.js
+        env:
+          KEEPER_PRIVATE_KEY: ${{ secrets.KEEPER_PRIVATE_KEY }}
+          VAULT_ADDRESS: ${{ secrets.JUSDI_VAULT_ADDRESS }}
+
+      - name: Log result
+        run: |
+          echo "Keeper run completed at $(date)"
+          echo "Drift detected: ${{ steps.check_drift.outputs.needs_rebalance }}"
