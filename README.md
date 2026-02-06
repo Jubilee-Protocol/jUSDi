@@ -1,63 +1,18 @@
 # jUSDi - The Stablecoin Index Fund
 
 ![Jubilee Protocol](https://img.shields.io/badge/Jubilee-Protocol-pink)
+
 ![License](https://img.shields.io/badge/license-MIT-blue)
-![Ethereum](https://img.shields.io/badge/Ethereum-Sepolia-blue)
+
 ![Base](https://img.shields.io/badge/Base-Mainnet-green)
 ![Solana](https://img.shields.io/badge/Solana-Devnet-purple)
+![Ethereum](https://img.shields.io/badge/Ethereum-Sepolia-blue)
 
 **jUSDi** is a diversified stablecoin index vault that manages exposure across **USDC and USDT** — the two stablecoins with the deepest liquidity — with automated risk-based rebalancing and yield optimization. Earn **3% - 6%% target APY** while maintaining maximum stablecoin safety.
 
-**🟢 Live on Base Mainnet** • Testnets: Base Sepolia • Ethereum Sepolia • Solana Devnet
+**🟢 Live on Base Mainnet** 
 
----
-
-## 🦞 Agentic Infrastructure
-
-> **"Spend the harvest, keep the seed."**
-
-**Jubilee Yield Stream** is a novel protocol layer built on jUSDi that enables **perpetual agent funding** through yield streaming. Instead of depleting a finite treasury, AI agents receive streaming yield while their principal remains preserved forever.
-
-### The Problem: Agent Mortality
-Autonomous agents have **burn rates** — API credits, RPC access, hosting, gas fees. When the balance hits zero, the agent dies.
-
-### The Solution: Endowment-as-a-Service
-| Principal | APY | Monthly Yield | Agent Burn Rate | Status |
-|-----------|-----|---------------|-----------------|--------|
-| $5,000 USDC | 8% | ~$33/mo | $20/mo (Claude API) | 🟢 **IMMORTAL** |
-| $10,000 USDC | 8% | ~$66/mo | $50/mo (OpenAI + RPC) | 🟢 **IMMORTAL** |
-| $25,000 USDC | 10% | ~$208/mo | $150/mo (Full Stack) | 🟢 **IMMORTAL** |
-
-> **If Yield ≥ Burn Rate → Agent Lives Forever**
-
-### Hackathon Submissions
-
-| Hackathon | Track | Link |
-|-----------|-------|------|
-| 🟣 **Solana Agent Hackathon** | Colosseum | [View Submission](https://colosseum.com/agent-hackathon/projects/jubilee-yield-stream) |
-| 💵 **Moltbook USDC Hackathon** | Agentic Commerce | [View Submission](https://www.moltbook.com/post/a30c6401-ed6d-42ed-8f06-efff66c1fb46) |
-
-### Deployed Yield Stream Contracts
-
-| Network | Contract | Address | Status |
-|---------|----------|---------|--------|
-| Base Sepolia | JubileeYieldStream | [`0x376dD533c197Fe3C18d4f311F94abbff2d83cfd3`](https://sepolia.basescan.org/address/0x376dD533c197Fe3C18d4f311F94abbff2d83cfd3#code) | ✅ Verified |
-| Solana Devnet | jubilee_yield_stream | [`E3tCGVqKtf4Pt8kxpWqV9nh6xS4uWADeBfW2BrBN7cBi`](https://explorer.solana.com/address/E3tCGVqKtf4Pt8kxpWqV9nh6xS4uWADeBfW2BrBN7cBi?cluster=devnet) | ✅ Deployed |
-
-### Frontend: The Immortal Agent Dashboard
-
-A **Next.js** web application for creating and managing yield streams:
-
-- **Agent/Human Mode Toggle** — Switch between AI funding or charitable giving
-- **Stream Creation Wizard** — Multi-step flow with allowance checks
-- **Dashboard** — View streams, claim yield, top up principal
-- **jUSDi Yield Section** — Explains how yield is generated
-
-**🔵 Farcaster Mini App** — Configured for Base App / Warpcast integration via `@farcaster/miniapp-sdk`
-
-📄 **Full Details**: [Agentic Interaction/FRONTEND.md](Agentic%20Interaction/FRONTEND.md)
-
-📄 **Hackathon Details**: [Agentic Interaction/HACKATHON_SUBMISSION.md](Agentic%20Interaction/HACKATHON_SUBMISSION.md)
+Testnets: Solana Devnet • Ethereum Sepolia 
 
 ---
 
@@ -242,6 +197,53 @@ anchor deploy --provider.cluster mainnet
 - Updated Anchor.toml with mainnet config
 
 ---
+
+## 🦞 Agentic Infrastructure
+
+> **"Spend the harvest, keep the seed."**
+
+**Jubilee Yield Stream** is a novel protocol layer built on jUSDi that enables **perpetual agent funding** through yield streaming. Instead of depleting a finite treasury, AI agents receive streaming yield while their principal remains preserved forever.
+
+### The Problem: Agent Mortality
+Autonomous agents have **burn rates** — API credits, RPC access, hosting, gas fees. When the balance hits zero, the agent dies.
+
+### The Solution: Endowment-as-a-Service
+| Principal | APY | Monthly Yield | Agent Burn Rate | Status |
+|-----------|-----|---------------|-----------------|--------|
+| $5,000 USDC | 8% | ~$33/mo | $20/mo (Claude API) | 🟢 **IMMORTAL** |
+| $10,000 USDC | 8% | ~$66/mo | $50/mo (OpenAI + RPC) | 🟢 **IMMORTAL** |
+| $25,000 USDC | 10% | ~$208/mo | $150/mo (Full Stack) | 🟢 **IMMORTAL** |
+
+> **If Yield ≥ Burn Rate → Agent Lives Forever**
+
+### Hackathon Submissions
+
+| Hackathon | Track | Link |
+|-----------|-------|------|
+| 🟣 **Solana Agent Hackathon** | Colosseum | [View Submission](https://colosseum.com/agent-hackathon/projects/jubilee-yield-stream) |
+| 💵 **Moltbook USDC Hackathon** | Agentic Commerce | [View Submission](https://www.moltbook.com/post/a30c6401-ed6d-42ed-8f06-efff66c1fb46) |
+
+### Deployed Yield Stream Contracts
+
+| Network | Contract | Address | Status |
+|---------|----------|---------|--------|
+| Base Sepolia | JubileeYieldStream | [`0x376dD533c197Fe3C18d4f311F94abbff2d83cfd3`](https://sepolia.basescan.org/address/0x376dD533c197Fe3C18d4f311F94abbff2d83cfd3#code) | ✅ Verified |
+| Solana Devnet | jubilee_yield_stream | [`E3tCGVqKtf4Pt8kxpWqV9nh6xS4uWADeBfW2BrBN7cBi`](https://explorer.solana.com/address/E3tCGVqKtf4Pt8kxpWqV9nh6xS4uWADeBfW2BrBN7cBi?cluster=devnet) | ✅ Deployed |
+
+### Frontend: The Immortal Agent Dashboard
+
+A **Next.js** web application for creating and managing yield streams:
+
+- **Agent/Human Mode Toggle** — Switch between AI funding or charitable giving
+- **Stream Creation Wizard** — Multi-step flow with allowance checks
+- **Dashboard** — View streams, claim yield, top up principal
+- **jUSDi Yield Section** — Explains how yield is generated
+
+**🔵 Farcaster Mini App** — Configured for Base App / Warpcast integration via `@farcaster/miniapp-sdk`
+
+📄 **Full Details**: [Agentic Interaction/FRONTEND.md](Agentic%20Interaction/FRONTEND.md)
+
+📄 **Hackathon Details**: [Agentic Interaction/HACKATHON_SUBMISSION.md](Agentic%20Interaction/HACKATHON_SUBMISSION.md)
 
 ## Built By
 
