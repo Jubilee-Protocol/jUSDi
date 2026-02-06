@@ -12,7 +12,8 @@
 | Contract | Address | Verified | Score |
 |----------|---------|:--------:|-------|
 | JUSDiVault | [`0x0B03...`](https://basescan.org/address/0x0B03463259d5041004290822444c4183aE936050#code) | ✅ | 92/100 |
-| LendingRouter | [`0x6533...`](https://basescan.org/address/0x6533715ccd0fdDe359baB156080DD38D5C85FfF9#code) | ✅ | 90/100 |
+| LendingRouter (v2) | [`0x90AA...`](https://basescan.org/address/0x90AA6bEccFcD34BE53B8742659235084337840e9#code) | ⏳ | 90/100 |
+| ~~LendingRouter (v1)~~ | ~~[`0x6533...`](https://basescan.org/address/0x6533715ccd0fdDe359baB156080DD38D5C85FfF9#code)~~ | ❌ | Deprecated |
 | LendingRouterAdapter | [`0x15f0...`](https://basescan.org/address/0x15f0Eb7f49E3d35B37F9B606b966a684Ce7ebc03#code) | ✅ | 88/100 |
 | StablecoinOracle | [`0x0814...`](https://basescan.org/address/0x081433E5DbfAeBffBdDc1F69B9AB372D7A00fA7a#code) | ✅ | 95/100 |
 | RiskScoring | [`0x79Bc...`](https://basescan.org/address/0x79Bc0A789FC14919ee1698D115624600658efc4e#code) | ✅ | 95/100 |
@@ -31,6 +32,7 @@ The Jan 25, 2026 audit found critical issues. **All fixed:**
 |----|-------|--------|
 | C-01 | Missing withdraw function | ✅ Fixed (ERC4626 compliant) |
 | C-02 | Deposit doesn't mint shares | ✅ Fixed (full ERC4626) |
+| **C-03** | **LendingRouter owned by Adapter not Vault** | ✅ Fixed (Feb 6 - deployed v2) |
 | M-01 | Strategy harvest returns 0 | ✅ Fixed (tracks yield) |
 | M-02 | No slippage protection | ⚠️ Partial (single protocol) |
 

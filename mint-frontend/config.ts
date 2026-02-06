@@ -50,7 +50,7 @@ export const CONTRACTS = {
         vault: '0x0B03463259d5041004290822444c4183aE936050',    // JUSDiVault (ERC4626)
         strategy: '0x0B03463259d5041004290822444c4183aE936050', // Alias for vault (for UI compatibility)
         adapter: '0x15f0Eb7f49E3d35B37F9B606b966a684Ce7ebc03', // LendingRouterAdapter
-        lendingRouter: '0x6533715ccd0fdDe359baB156080DD38D5C85FfF9', // LendingRouter
+        lendingRouter: '0x90AA6bEccFcD34BE53B8742659235084337840e9', // LendingRouter (v2 - owned by Vault)
         jusdiToken: '0x04cC650F6dB0B91Ef910a4a54F22232771988432', // jUSDi OFT Token
         USDC: '0x833589fCD6eDb6E08f4c7C32D4f71b54bdA02913',     // Native USDC on Base
         USDT: '0xfde4C96c8593536E31F229EA8f37b2ADa2699bb2',     // Bridged USDT on Base
