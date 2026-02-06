@@ -1242,7 +1242,7 @@ export default function Home() {
                             </div>
                             <div style={{ background: c.card, borderRadius: '12px', padding: '12px', textAlign: 'center', boxShadow: '0 1px 3px rgba(0,0,0,0.1)', border: `1px solid ${c.cardBorder}` }}>
                                 <div style={{ fontSize: '10px', color: c.textLight, textTransform: 'uppercase', marginBottom: '4px' }}>APY</div>
-                                <div style={{ fontSize: '14px', fontWeight: '600', color: '#0052FF' }}>6-10%</div>
+                                <div style={{ fontSize: '14px', fontWeight: '600', color: '#0052FF' }}>3-6%</div>
                             </div>
                             <div style={{ background: c.card, borderRadius: '12px', padding: '12px', textAlign: 'center', boxShadow: '0 1px 3px rgba(0,0,0,0.1)', border: `1px solid ${c.cardBorder}` }}>
                                 <div style={{ fontSize: '10px', color: c.textLight, textTransform: 'uppercase', marginBottom: '4px' }}>USDT</div>

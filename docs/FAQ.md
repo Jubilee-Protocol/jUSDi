@@ -9,7 +9,7 @@ jUSDi is the **Jubilee USD Index** — a yield-bearing stablecoin index token on
 90% of deposits are automatically deployed to **Aave V3** on Base mainnet. The vault maintains a 10% liquid buffer for instant withdrawals while the rest earns interest in real-time via Aave's aUSDC token.
 
 ### What's the expected APY?
-**6-10% APY**, depending on Aave V3's lending rates. Rates fluctuate based on market demand for borrowing USDC.
+**3-6% APY**, depending on Aave V3's lending rates. Rates fluctuate based on market demand for borrowing USDC.
 
 ### Is there a deposit cap?
 **No.** There is no maximum deposit limit.

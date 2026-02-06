@@ -13,7 +13,7 @@ export const metadata: Metadata = {
     },
     openGraph: {
         title: 'jUSDi | Stablecoin Index on Base',
-        description: 'The Jubilee USD Index on Base. Earn 6-10% APY on diversified stablecoin exposure.',
+        description: 'The Jubilee USD Index on Base. Earn 3-6% APY on diversified stablecoin exposure.',
         url: 'https://base.jusdi.xyz',
         siteName: 'jUSDi',
         images: [
@@ -30,7 +30,7 @@ export const metadata: Metadata = {
     twitter: {
         card: 'summary_large_image',
         title: 'jUSDi | Stablecoin Index on Base',
-        description: 'The Jubilee USD Index on Base. Earn 6-10% APY on diversified stablecoin exposure.',
+        description: 'The Jubilee USD Index on Base. Earn 3-6% APY on diversified stablecoin exposure.',
         images: ['https://base.jusdi.xyz/og-image.png'],
     },
     other: {
