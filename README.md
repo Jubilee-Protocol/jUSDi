@@ -98,12 +98,13 @@ For full details, see [AUDIT_REPORT.md](docs/AUDIT_REPORT.md).
 | LendingRouter | `TBD` |
 | Adapter | `TBD` |
 
-### Base Mainnet (Coming Soon)
+### Base Mainnet 🟢 LIVE
 | Contract | Address |
 |----------|---------|
-| jUSDi Vault | `TBD` |
-| LendingRouter | `TBD` |
-| Adapter | `TBD` |
+| JUSDiVault | [`0x0B03463259d5041004290822444c4183aE936050`](https://basescan.org/address/0x0B03463259d5041004290822444c4183aE936050#code) |
+| LendingRouter | [`0x6533715ccd0fdDe359baB156080DD38D5C85FfF9`](https://basescan.org/address/0x6533715ccd0fdDe359baB156080DD38D5C85FfF9#code) |
+| Adapter | [`0x15f0Eb7f49E3d35B37F9B606b966a684Ce7ebc03`](https://basescan.org/address/0x15f0Eb7f49E3d35B37F9B606b966a684Ce7ebc03#code) |
+| jUSDi Token | [`0x04cC650F6dB0B91Ef910a4a54F22232771988432`](https://basescan.org/address/0x04cC650F6dB0B91Ef910a4a54F22232771988432) |
 
 ### Base Sepolia (Testnet)
 | Contract | Address |
@@ -208,6 +209,19 @@ anchor deploy --provider.cluster mainnet
 ---
 
 ## Changelog
+
+### February 6, 2026 🚀 BASE MAINNET LIVE
+
+**Base Mainnet Deployment**
+- ✅ JUSDiVault deployed and verified
+- ✅ LendingRouter (Aave V3) deployed
+- ✅ All 6 contracts verified on Basescan
+- ✅ Fee structure: 1% management + 10% performance
+- ✅ Weekly keeper for automated fee collection
+
+**Security**
+- ✅ EVM Red Team Audit completed
+- ✅ All critical issues from Jan 25 audit FIXED
 
 ### January 25, 2026
 
