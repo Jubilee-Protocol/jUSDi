@@ -52,10 +52,29 @@ contract JUSDiVault is ERC4626, Ownable, ReentrancyGuard {
     uint256 public constant BPS_DENOMINATOR = 10000;
     uint256 public constant TARGET_PRICE_STABILITY = 1e8; // $1.00
 
+    // --- Fee Structure (Deployer Profit) ---
+    /// @notice Management fee in basis points (e.g., 100 = 1% annual)
+    uint256 public managementFeeBps = 100; // 1% annual
+    /// @notice Performance fee on yield in basis points (e.g., 1000 = 10%)
+    uint256 public performanceFeeBps = 1000; // 10% of yield
+    /// @notice Treasury address for fee collection
+    address public treasury;
+    /// @notice Last fee collection timestamp
+    uint256 public lastFeeCollection;
+    /// @notice Accumulated fees pending withdrawal
+    uint256 public accumulatedFees;
+
     // --- Events ---
     event AssetAdded(address indexed asset);
     event Rebalanced(uint256 timestamp);
     event EmergencyFlightExecuted(address indexed riskyAsset, uint256 amount);
+    event FeesCollected(
+        uint256 managementFee,
+        uint256 performanceFee,
+        address treasury
+    );
+    event TreasuryUpdated(address newTreasury);
+    event FeesUpdated(uint256 managementFeeBps, uint256 performanceFeeBps);
 
     constructor(
         IERC20 _baseAsset,
@@ -114,6 +133,95 @@ contract JUSDiVault is ERC4626, Ownable, ReentrancyGuard {
         if (_rebalancingEngine != address(0))
             rebalancingEngine = _rebalancingEngine;
         if (_lendingRouter != address(0)) lendingRouter = _lendingRouter;
+    }
+
+    /**
+     * @notice Set the treasury address for fee collection.
+     * @param _treasury The new treasury address.
+     */
+    function setTreasury(address _treasury) external onlyOwner {
+        require(_treasury != address(0), "Invalid treasury");
+        treasury = _treasury;
+        emit TreasuryUpdated(_treasury);
+    }
+
+    /**
+     * @notice Update fee parameters.
+     * @param _managementFeeBps Annual management fee in BPS (max 500 = 5%).
+     * @param _performanceFeeBps Performance fee on yield in BPS (max 2000 = 20%).
+     */
+    function setFees(
+        uint256 _managementFeeBps,
+        uint256 _performanceFeeBps
+    ) external onlyOwner {
+        require(_managementFeeBps <= 500, "Management fee too high");
+        require(_performanceFeeBps <= 2000, "Performance fee too high");
+        managementFeeBps = _managementFeeBps;
+        performanceFeeBps = _performanceFeeBps;
+        emit FeesUpdated(_managementFeeBps, _performanceFeeBps);
+    }
+
+    /**
+     * @notice Collect accumulated fees (management + performance).
+     * @dev Management fee is pro-rated based on time since last collection.
+     *      Performance fee is based on yield earned since last collection.
+     */
+    function collectFees() external nonReentrant {
+        require(treasury != address(0), "Treasury not set");
+
+        address baseAsset = asset();
+        uint256 total = totalAssets();
+
+        // 1. Management fee: pro-rated annually
+        uint256 timeSinceLast = block.timestamp - lastFeeCollection;
+        uint256 annualFee = (total * managementFeeBps) / BPS_DENOMINATOR;
+        uint256 managementFee = (annualFee * timeSinceLast) / 365 days;
+
+        // 2. Performance fee: based on yield growth
+        uint256 performanceFee = 0;
+        if (lendingRouter != address(0)) {
+            try
+                LendingRouter(lendingRouter).getBalance(
+                    address(lendingRouter),
+                    baseAsset,
+                    false
+                )
+            returns (uint256 investedTotal) {
+                uint256 investedPrincipal = _investedBalances[baseAsset];
+                if (investedTotal > investedPrincipal) {
+                    uint256 yield = investedTotal - investedPrincipal;
+                    performanceFee =
+                        (yield * performanceFeeBps) /
+                        BPS_DENOMINATOR;
+                }
+            } catch {}
+        }
+
+        // 3. Transfer fees to treasury
+        uint256 totalFees = managementFee + performanceFee;
+        if (totalFees > 0) {
+            // Pull from yield first if needed
+            uint256 liquid = IERC20(baseAsset).balanceOf(address(this));
+            if (liquid < totalFees && lendingRouter != address(0)) {
+                uint256 needed = totalFees - liquid;
+                LendingRouter(lendingRouter).withdraw(
+                    baseAsset,
+                    needed,
+                    address(this),
+                    false
+                );
+                if (_investedBalances[baseAsset] >= needed) {
+                    _investedBalances[baseAsset] -= needed;
+                } else {
+                    _investedBalances[baseAsset] = 0;
+                }
+            }
+            IERC20(baseAsset).safeTransfer(treasury, totalFees);
+            _managedBalances[baseAsset] -= totalFees;
+        }
+
+        lastFeeCollection = block.timestamp;
+        emit FeesCollected(managementFee, performanceFee, treasury);
     }
 
     function _addAsset(address asset) internal {
