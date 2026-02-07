@@ -122,13 +122,10 @@ pub mod jusdi_vault {
         Ok(())
     }
     
-    /// Legacy admin harvest function (manual yield injection)
-    pub fn harvest_yield(ctx: Context<HarvestYield>, amount: u64) -> Result<()> {
-         let vault = &mut ctx.accounts.vault;
-         require!(ctx.accounts.admin.key() == vault.admin, ErrorCode::Unauthorized);
-         vault.managed_assets += amount;
-         Ok(())
-    }
+    /// DEPRECATED: Legacy admin harvest function removed for security
+    /// Use harvest_from_strategy instead which verifies yield via MockStrategy
+    /// If you need emergency yield injection, deploy a new strategy
+    // pub fn harvest_yield(...) - REMOVED: See security audit H-2
 
     // ═══════════════════════════════════════════════════════════════════════════════
     // STRATEGY INSTRUCTIONS (Mock Strategy for Yield Generation)
@@ -150,6 +147,7 @@ pub mod jusdi_vault {
 
     /// Deploy funds from vault to strategy (admin only)
     pub fn deploy_to_strategy(ctx: Context<DeployToStrategy>, amount: u64) -> Result<()> {
+        require!(!ctx.accounts.vault.is_paused, ErrorCode::VaultPaused);
         let vault_bump = ctx.accounts.vault.bump;
         
         // Transfer tokens from vault to strategy account
@@ -182,6 +180,7 @@ pub mod jusdi_vault {
 
     /// Recall funds from strategy back to vault (admin only)
     pub fn recall_from_strategy(ctx: Context<RecallFromStrategy>, amount: u64) -> Result<()> {
+        require!(!ctx.accounts.vault.is_paused, ErrorCode::VaultPaused);
         let vault_key = ctx.accounts.vault.key();
         let strategy_bump = ctx.accounts.mock_strategy.bump;
         let deployed_amount = ctx.accounts.mock_strategy.deployed_amount;
@@ -373,7 +372,8 @@ pub mod jusdi_vault {
             amount_in,
         )?;
         
-        // 2. Verify admin provides at least min_amount_out of destination token
+        // 2. Reload account to get fresh balance (prevents TOCTOU race - C-4 fix)
+        ctx.accounts.admin_token_out.reload()?;
         let admin_out_balance = ctx.accounts.admin_token_out.amount;
         require!(admin_out_balance >= min_amount_out, ErrorCode::InsufficientSwapOutput);
         
@@ -390,11 +390,13 @@ pub mod jusdi_vault {
             min_amount_out,
         )?;
         
-        // 4. Update asset tracking
+        // 4. Update asset tracking (using checked_sub for accounting accuracy - M-2 fix)
         let asset_in = &mut ctx.accounts.asset_in;
         let asset_out = &mut ctx.accounts.asset_out;
         
-        asset_in.total_deposited = asset_in.total_deposited.saturating_sub(amount_in);
+        asset_in.total_deposited = asset_in.total_deposited
+            .checked_sub(amount_in)
+            .ok_or(ErrorCode::InsufficientFunds)?;
         asset_out.total_deposited += min_amount_out;
         
         Ok(())
@@ -426,14 +428,29 @@ pub struct Deposit<'info> {
     #[account(mut, seeds = [b"vault"], bump = vault.bump)]
     pub vault: Box<Account<'info, VaultState>>,
     
-    #[account(mut)]
+    #[account(
+        mut,
+        constraint = user_token_account.owner == user.key(),
+        constraint = user_token_account.mint == vault.base_mint
+    )]
     pub user_token_account: Box<Account<'info, TokenAccount>>,
-    #[account(mut)]
+    #[account(
+        mut,
+        constraint = vault_token_account.owner == vault.key(),
+        constraint = vault_token_account.mint == vault.base_mint
+    )]
     pub vault_token_account: Box<Account<'info, TokenAccount>>,
     
-    #[account(mut)]
+    #[account(
+        mut,
+        constraint = jusdi_mint.mint_authority.unwrap() == vault.key()
+    )]
     pub jusdi_mint: Box<Account<'info, Mint>>,
-    #[account(mut)]
+    #[account(
+        mut,
+        constraint = user_shares_account.owner == user.key(),
+        constraint = user_shares_account.mint == jusdi_mint.key()
+    )]
     pub user_shares_account: Box<Account<'info, TokenAccount>>,
     
     pub base_mint: Box<Account<'info, Mint>>,
@@ -446,14 +463,29 @@ pub struct Withdraw<'info> {
     #[account(mut, seeds = [b"vault"], bump = vault.bump)]
     pub vault: Box<Account<'info, VaultState>>,
     
-    #[account(mut)]
+    #[account(
+        mut,
+        constraint = jusdi_mint.mint_authority.unwrap() == vault.key()
+    )]
     pub jusdi_mint: Box<Account<'info, Mint>>,
-    #[account(mut)]
+    #[account(
+        mut,
+        constraint = user_shares_account.owner == user.key(),
+        constraint = user_shares_account.mint == jusdi_mint.key()
+    )]
     pub user_shares_account: Box<Account<'info, TokenAccount>>,
     
-    #[account(mut)]
+    #[account(
+        mut,
+        constraint = vault_token_account.owner == vault.key(),
+        constraint = vault_token_account.mint == vault.base_mint
+    )]
     pub vault_token_account: Box<Account<'info, TokenAccount>>,
-    #[account(mut)]
+    #[account(
+        mut,
+        constraint = user_token_account.owner == user.key(),
+        constraint = user_token_account.mint == vault.base_mint
+    )]
     pub user_token_account: Box<Account<'info, TokenAccount>>,
     
     pub user: Signer<'info>,
@@ -589,21 +621,33 @@ pub struct DepositMulti<'info> {
     
     pub mint: Account<'info, Mint>,
     
-    #[account(mut)]
+    #[account(
+        mut,
+        constraint = user_token_account.owner == user.key(),
+        constraint = user_token_account.mint == mint.key()
+    )]
     pub user_token_account: Box<Account<'info, TokenAccount>>,
-    #[account(mut)]
+    #[account(
+        mut,
+        constraint = vault_token_account.owner == vault.key(),
+        constraint = vault_token_account.mint == mint.key()
+    )]
     pub vault_token_account: Box<Account<'info, TokenAccount>>,
     
-    #[account(mut)]
+    #[account(
+        mut,
+        constraint = jusdi_mint.mint_authority.unwrap() == vault.key()
+    )]
     pub jusdi_mint: Box<Account<'info, Mint>>,
-    #[account(mut)]
+    #[account(
+        mut,
+        constraint = user_shares_account.owner == user.key(),
+        constraint = user_shares_account.mint == jusdi_mint.key()
+    )]
     pub user_shares_account: Box<Account<'info, TokenAccount>>,
     
     pub user: Signer<'info>,
     pub token_program: Program<'info, Token>,
-    
-    // Optional: Pyth price feed for non-stablecoin assets
-    // pub price_update: Account<'info, PriceUpdateV2>,
 }
 
 #[derive(Accounts)]
