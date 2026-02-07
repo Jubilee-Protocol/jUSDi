@@ -335,6 +335,70 @@ pub mod jusdi_vault {
         ctx.accounts.asset_config.is_active = is_active;
         Ok(())
     }
+
+    // ═══════════════════════════════════════════════════════════════════════════════
+    // REBALANCING INSTRUCTIONS
+    // ═══════════════════════════════════════════════════════════════════════════════
+
+    /// Swap assets for rebalancing (admin/keeper only)
+    /// 
+    /// This is a "trusted swap" pattern where:
+    /// 1. Admin/keeper calculates optimal swap route offline (via Jupiter API)
+    /// 2. Admin provides expected min_amount_out for slippage protection
+    /// 3. Vault transfers tokens for swap and receives swapped tokens back
+    /// 
+    /// NOTE: In production, this would CPI to Jupiter or another DEX aggregator.
+    /// For V1, we use a simplified pattern where admin provides the swapped tokens.
+    pub fn swap_assets(
+        ctx: Context<SwapAssets>,
+        amount_in: u64,
+        min_amount_out: u64,
+    ) -> Result<()> {
+        let vault_bump = ctx.accounts.vault.bump;
+        
+        // 1. Transfer tokens FROM vault to admin (for swap execution)
+        let seeds = &[b"vault".as_ref(), &[vault_bump]];
+        let signer = &[&seeds[..]];
+        
+        token::transfer(
+            CpiContext::new_with_signer(
+                ctx.accounts.token_program.to_account_info(),
+                Transfer {
+                    from: ctx.accounts.vault_token_in.to_account_info(),
+                    to: ctx.accounts.admin_token_in.to_account_info(),
+                    authority: ctx.accounts.vault.to_account_info(),
+                },
+                signer,
+            ),
+            amount_in,
+        )?;
+        
+        // 2. Verify admin provides at least min_amount_out of destination token
+        let admin_out_balance = ctx.accounts.admin_token_out.amount;
+        require!(admin_out_balance >= min_amount_out, ErrorCode::InsufficientSwapOutput);
+        
+        // 3. Transfer swapped tokens FROM admin to vault
+        token::transfer(
+            CpiContext::new(
+                ctx.accounts.token_program.to_account_info(),
+                Transfer {
+                    from: ctx.accounts.admin_token_out.to_account_info(),
+                    to: ctx.accounts.vault_token_out.to_account_info(),
+                    authority: ctx.accounts.admin.to_account_info(),
+                },
+            ),
+            min_amount_out,
+        )?;
+        
+        // 4. Update asset tracking
+        let asset_in = &mut ctx.accounts.asset_in;
+        let asset_out = &mut ctx.accounts.asset_out;
+        
+        asset_in.total_deposited = asset_in.total_deposited.saturating_sub(amount_in);
+        asset_out.total_deposited += min_amount_out;
+        
+        Ok(())
+    }
 }
 
 // ═══════════════════════════════════════════════════════════════════════════════
@@ -558,6 +622,47 @@ pub struct SetAssetActive<'info> {
     pub admin: Signer<'info>,
 }
 
+#[derive(Accounts)]
+pub struct SwapAssets<'info> {
+    #[account(mut, seeds = [b"vault"], bump = vault.bump, has_one = admin)]
+    pub vault: Account<'info, VaultState>,
+    
+    // Asset being sold
+    #[account(
+        mut,
+        seeds = [b"asset_config", vault.key().as_ref(), mint_in.key().as_ref()],
+        bump = asset_in.bump,
+        constraint = asset_in.vault == vault.key()
+    )]
+    pub asset_in: Account<'info, AssetConfig>,
+    pub mint_in: Account<'info, Mint>,
+    
+    // Asset being bought
+    #[account(
+        mut,
+        seeds = [b"asset_config", vault.key().as_ref(), mint_out.key().as_ref()],
+        bump = asset_out.bump,
+        constraint = asset_out.vault == vault.key()
+    )]
+    pub asset_out: Account<'info, AssetConfig>,
+    pub mint_out: Account<'info, Mint>,
+    
+    // Vault token accounts
+    #[account(mut)]
+    pub vault_token_in: Account<'info, TokenAccount>,
+    #[account(mut)]
+    pub vault_token_out: Account<'info, TokenAccount>,
+    
+    // Admin token accounts (for swap execution)
+    #[account(mut)]
+    pub admin_token_in: Account<'info, TokenAccount>,
+    #[account(mut)]
+    pub admin_token_out: Account<'info, TokenAccount>,
+    
+    pub admin: Signer<'info>,
+    pub token_program: Program<'info, Token>,
+}
+
 // ═══════════════════════════════════════════════════════════════════════════════
 // STATE
 // ═══════════════════════════════════════════════════════════════════════════════
@@ -650,4 +755,6 @@ pub enum ErrorCode {
     InvalidOraclePrice,
     #[msg("Oracle price is stale")]
     StaleOraclePrice,
+    #[msg("Insufficient swap output amount")]
+    InsufficientSwapOutput,
 }
