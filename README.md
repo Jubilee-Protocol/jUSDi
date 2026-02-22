@@ -2,8 +2,9 @@
 
 ![Jubilee Protocol](https://img.shields.io/badge/Jubilee-Protocol-pink)
 ![License](https://img.shields.io/badge/license-MIT-blue)
-![Base](https://img.shields.io/badge/Base-Mainnet-green)
+[![Donate Crypto](https://img.shields.io/badge/Donate-Crypto-f7931a?logo=bitcoin&logoColor=white)](https://commerce.coinbase.com/checkout/122a2979-e559-44b9-bb9d-2ff0c6a3025b)
 
+![Base](https://img.shields.io/badge/Base-Mainnet-green)
 ![Solana](https://img.shields.io/badge/Solana-Devnet-purple)
 ![Ethereum](https://img.shields.io/badge/Ethereum-Sepolia-blue)
 
