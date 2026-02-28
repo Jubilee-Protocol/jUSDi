@@ -7,15 +7,15 @@ seeds = false
 skip-lint = false
 
 [programs.localnet]
-jusdi_vault = "2HJod3PNRNfYzzgZHVM5TjCoZrFGJjPmYkRkUeJMKw9o"
+jusdi_vault = "9fU2PX2z4We6N3A6xpFmzqvsXqyyWZZ7o9EBRCkz2FLR"
 jubilee_yield_stream = "E3tCGVqKtf4Pt8kxpWqV9nh6xS4uWADeBfW2BrBN7cBi"
 
 [programs.devnet]
-jusdi_vault = "2HJod3PNRNfYzzgZHVM5TjCoZrFGJjPmYkRkUeJMKw9o"
+jusdi_vault = "9fU2PX2z4We6N3A6xpFmzqvsXqyyWZZ7o9EBRCkz2FLR"
 jubilee_yield_stream = "E3tCGVqKtf4Pt8kxpWqV9nh6xS4uWADeBfW2BrBN7cBi"
 
 [programs.mainnet]
-jusdi_vault = "2HJod3PNRNfYzzgZHVM5TjCoZrFGJjPmYkRkUeJMKw9o"
+jusdi_vault = "9fU2PX2z4We6N3A6xpFmzqvsXqyyWZZ7o9EBRCkz2FLR"
 jubilee_yield_stream = "E3tCGVqKtf4Pt8kxpWqV9nh6xS4uWADeBfW2BrBN7cBi"
 
 [registry]

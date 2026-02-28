@@ -2,7 +2,7 @@ use anchor_lang::prelude::*;
 use anchor_spl::token::{self, Mint, Token, TokenAccount, Transfer, MintTo, Burn};
 use pyth_solana_receiver_sdk::price_update::PriceUpdateV2;
 
-declare_id!("2HJod3PNRNfYzzgZHVM5TjCoZrFGJjPmYkRkUeJMKw9o");
+declare_id!("9fU2PX2z4We6N3A6xpFmzqvsXqyyWZZ7o9EBRCkz2FLR");
 
 /// Maximum number of supported assets in the vault
 pub const MAX_ASSETS: usize = 4;
