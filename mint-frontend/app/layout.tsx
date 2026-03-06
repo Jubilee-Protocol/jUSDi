@@ -35,6 +35,7 @@ export const metadata: Metadata = {
     },
     other: {
         'base:app_id': '6985fdf8785494a0fe86a54e',
+        'talentapp:project_verification': '4608344c003cdc036fc772ef59f87d73dcbdbbd04cebc0dba222654f2a21291d6bb6084c8191f2f2dfa42912570cfdcee8cc55e26c9541ea869aeb9fe9cf36e8',
         'fc:miniapp': JSON.stringify({
             version: 'next',
             imageUrl: 'https://base.jusdi.xyz/og-image.png',
