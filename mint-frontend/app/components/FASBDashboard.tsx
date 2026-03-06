@@ -70,8 +70,8 @@ export function FASBDashboard({ isOpen, onClose, theme, btcPrice }: FASBDashboar
         args: address ? [address] : undefined,
     });
 
-    const balanceNum = jusdiBalance ? Number(formatUnits(jusdiBalance, 6)) : 0; // USDC uses 6 decimals
-    const fairValue = balanceNum * 1; // 1 USDC = $1
+    const balanceNum = jusdiBalance ? Number(formatUnits(jusdiBalance, 18)) : 0; // jUSDi shares use 18 decimals
+    const fairValue = balanceNum * 1; // 1 jUSDi ≈ $1 (backed by USDC)
 
     // Calculate period dates
     const getPeriodDates = (p: Period): { start: Date; end: Date } => {

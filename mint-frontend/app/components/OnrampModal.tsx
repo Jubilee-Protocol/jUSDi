@@ -36,38 +36,12 @@ export function OnrampModal({ isOpen, onClose, theme, btcPrice }: OnrampModalPro
         success: '#22C55E',
     };
 
-    // Calculate estimated USDC
+    // Calculate estimated USDC (1:1 with USD for stablecoins)
     const usdAmount = parseFloat(amount) || 0;
-    const estimatedCbUSD = btcPrice > 0 ? (usdAmount / btcPrice).toFixed(6) : '0';
+    const estimatedUSDC = usdAmount.toFixed(2);
 
     const PRESET_AMOUNTS = [100, 250, 500, 1000];
 
-    // Coinbase Onramp - direct to USDC purchase on Base
-    const handleCoinbase = () => {
-        // Build Coinbase Onramp URL with parameters per docs:
-        // https://docs.cdp.coinbase.com/onramp-&-offramp/onramp-apis/generating-onramp-url
-        const params = new URLSearchParams({
-            appId: 'jusdi',
-            defaultAsset: 'CBUSD',
-            defaultNetwork: 'base',
-            presetFiatAmount: amount || '100',
-            fiatCurrency: 'USD',
-        });
-
-        // Add destination wallet if connected
-        if (address) {
-            // destinationWallets format: JSON array of {address, assets, blockchains}
-            const destinationWallets = JSON.stringify([{
-                address: address,
-                blockchains: ['base'],
-                assets: ['CBUSD']
-            }]);
-            params.set('destinationWallets', destinationWallets);
-        }
-
-        const url = `https://pay.coinbase.com/buy/select-asset?${params.toString()}`;
-        window.open(url, '_blank');
-    };
 
     const handleUniswap = () => {
         const url = `https://app.uniswap.org/swap?chain=base&outputCurrency=${CBUSD_ADDRESS}`;
@@ -196,42 +170,12 @@ export function OnrampModal({ isOpen, onClose, theme, btcPrice }: OnrampModalPro
                         <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
                             <span style={{ color: c.textLight, fontSize: '14px' }}>You'll need approximately</span>
                             <span style={{ color: c.text, fontSize: '18px', fontWeight: 600 }}>
-                                {estimatedCbUSD} USDC
+                                {estimatedUSDC} USDC
                             </span>
                         </div>
                     </div>
                 </div>
 
-                {/* Option 1: Coinbase */}
-                <button
-                    onClick={handleCoinbase}
-                    style={{
-                        width: '100%',
-                        padding: '16px 20px',
-                        marginBottom: '12px',
-                        display: 'flex',
-                        alignItems: 'center',
-                        justifyContent: 'space-between',
-                        backgroundColor: c.accent,
-                        color: '#ffffff',
-                        border: 'none',
-                        borderRadius: '12px',
-                        cursor: 'pointer',
-                        fontSize: '16px',
-                        fontWeight: 600,
-                    }}
-                >
-                    <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
-                        <span style={{ fontSize: '24px' }}>🏦</span>
-                        <div style={{ textAlign: 'left' }}>
-                            <div>Buy on Coinbase</div>
-                            <div style={{ fontSize: '12px', opacity: 0.8, fontWeight: 400 }}>
-                                Apple Pay • Cards • Bank Transfer
-                            </div>
-                        </div>
-                    </div>
-                    <span>→</span>
-                </button>
 
                 {/* Option 2: Uniswap */}
                 <button
